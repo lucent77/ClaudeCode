@@ -1,10 +1,10 @@
-# CREODENT Work Manager - Apache Configuration
+# CREODENT Work Manager - Apache Configuration (Hostinger Compatible)
 
 # Enable URL Rewriting
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Redirect to HTTPS (comment out if not using HTTPS)
+    # Redirect to HTTPS (uncomment when SSL is configured)
     # RewriteCond %{HTTPS} off
     # RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
@@ -41,9 +41,51 @@
 # Disable directory browsing
 Options -Indexes
 
-# Disable .php extension in URL
-# RewriteCond %{THE_REQUEST} /([^.]+)\.php [NC]
-# RewriteRule ^ /%1 [NC,L,R]
+# Protect sensitive directories
+<IfModule mod_rewrite.c>
+    # Deny access to config directory
+    RewriteRule ^config/ - [F,L]
+
+    # Deny access to vendor directory (except autoload.php)
+    RewriteRule ^vendor/(?!autoload\.php) - [F,L]
+
+    # Deny access to storage directory
+    RewriteRule ^storage/ - [F,L]
+
+    # Deny access to app directory
+    RewriteRule ^app/ - [F,L]
+
+    # Deny access to cron directory
+    RewriteRule ^cron/ - [F,L]
+
+    # Deny access to database directory
+    RewriteRule ^database/ - [F,L]
+
+    # Deny access to docs directory
+    RewriteRule ^docs/ - [F,L]
+</IfModule>
+
+# Protect config and sensitive files
+<FilesMatch "^(config\.php|\.env|\.env\.php|composer\.json|composer\.lock|\.gitignore|\.htaccess\.orig)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Protect .git directory
+<DirectoryMatch "\.git">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</DirectoryMatch>
 
 # Cache static assets
 <IfModule mod_expires.c>
@@ -70,18 +112,36 @@ Options -Indexes
     AddOutputFilterByType DEFLATE application/rss+xml
     AddOutputFilterByType DEFLATE application/javascript
     AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
 </IfModule>
 
-# Protect config files
-<FilesMatch "^(config\.php|\.env|\.env\.php)$">
-    Order allow,deny
-    Deny from all
-</FilesMatch>
-
-# Set PHP configurations
+# Set PHP configurations (if mod_php is available)
 <IfModule mod_php7.c>
     php_value upload_max_filesize 50M
     php_value post_max_size 50M
     php_value max_execution_time 300
     php_value max_input_time 300
+    php_value memory_limit 256M
 </IfModule>
+
+# Prevent access to SQL files
+<FilesMatch "\.sql$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Prevent access to log files
+<FilesMatch "\.(log|txt)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>

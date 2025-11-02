@@ -1,7 +1,7 @@
 <?php
 /**
  * CREODENT Integrated Work Management System
- * Main Entry Point
+ * Main Entry Point - Hostinger Compatible
  *
  * All requests are routed through this file
  */
@@ -11,10 +11,10 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Autoloader
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 // Load configuration
-$config = require __DIR__ . '/../config/config.php';
+$config = require __DIR__ . '/config/config.php';
 
 // Set timezone
 date_default_timezone_set($config['app']['timezone']);
