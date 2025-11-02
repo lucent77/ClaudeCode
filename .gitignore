@@ -1,0 +1,44 @@
+# Configuration
+/config/config.php
+
+# Storage
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/cache/*
+!/storage/cache/.gitkeep
+/storage/uploads/*
+!/storage/uploads/.gitkeep
+
+# Composer
+/vendor/
+composer.lock
+composer.phar
+
+# Installation
+.installed
+
+# OS Files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
+
+# Logs
+*.log
+error_log
+
+# Temporary files
+tmp/
+temp/
+
+# Sensitive data
+*.env
+.env.php
+credentials.json
+google_credentials.json
