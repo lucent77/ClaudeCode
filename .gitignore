@@ -1,0 +1,50 @@
+# Configuration files with sensitive data
+config/config.php
+
+# Composer
+/vendor/
+composer.lock
+
+# Storage directories
+storage/cache/*
+!storage/cache/.gitkeep
+storage/logs/*
+!storage/logs/.gitkeep
+storage/uploads/*
+!storage/uploads/.gitkeep
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# PHP Storm
+.phpstorm.meta.php
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# Development files
+.env
+.env.local
+.env.*.local
+
+# Test files
+/tests/cache/
+/tests/logs/
