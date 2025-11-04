@@ -1,0 +1,59 @@
+# CREODENT Integrated Work Management System - Crontab Example
+# Copy this file and adjust paths according to your installation
+#
+# To install:
+#   crontab -e
+#   Then paste the lines below, adjusting paths
+#
+# Format: minute hour day month weekday command
+# ┌───────────── minute (0 - 59)
+# │ ┌───────────── hour (0 - 23)
+# │ │ ┌───────────── day of month (1 - 31)
+# │ │ │ ┌───────────── month (1 - 12)
+# │ │ │ │ ┌───────────── day of week (0 - 6) (Sunday to Saturday)
+# │ │ │ │ │
+# │ │ │ │ │
+# * * * * * command
+
+# ==============================================================================
+# DAILY IMPORTS - Import yesterday's cases
+# ==============================================================================
+
+# HV Location - Every day at 6:00 AM
+0 6 * * * cd /path/to/creodent && /usr/bin/php cron/import-evolution.php HV 1 >> storage/logs/cron-hv.log 2>&1
+
+# NYC Location - Every day at 6:30 AM
+30 6 * * * cd /path/to/creodent && /usr/bin/php cron/import-evolution.php NYC 1 >> storage/logs/cron-nyc.log 2>&1
+
+# ==============================================================================
+# WEEKLY BACKUP SYNC - Import last 7 days
+# ==============================================================================
+
+# Every Sunday at 2:00 AM
+0 2 * * 0 cd /path/to/creodent && /usr/bin/php cron/import-evolution.php HV 7 >> storage/logs/cron-hv-weekly.log 2>&1
+0 2 * * 0 cd /path/to/creodent && /usr/bin/php cron/import-evolution.php NYC 7 >> storage/logs/cron-nyc-weekly.log 2>&1
+
+# ==============================================================================
+# MONTHLY FULL SYNC - Import last 30 days
+# ==============================================================================
+
+# 1st of every month at 3:00 AM
+0 3 1 * * cd /path/to/creodent && /usr/bin/php cron/import-evolution.php HV 30 >> storage/logs/cron-hv-monthly.log 2>&1
+0 3 1 * * cd /path/to/creodent && /usr/bin/php cron/import-evolution.php NYC 30 >> storage/logs/cron-nyc-monthly.log 2>&1
+
+# ==============================================================================
+# LOG CLEANUP (Optional) - Clean old log files
+# ==============================================================================
+
+# Delete logs older than 90 days, every day at 4:00 AM
+0 4 * * * find /path/to/creodent/storage/logs -name "*.log" -mtime +90 -delete
+
+# ==============================================================================
+# DATABASE BACKUP (Optional) - Backup database
+# ==============================================================================
+
+# Backup database every day at 1:00 AM
+0 1 * * * mysqldump -u username -p'password' database_name | gzip > /path/to/backups/db-$(date +\%Y\%m\%d).sql.gz
+
+# Delete backups older than 30 days
+0 1 * * * find /path/to/backups -name "db-*.sql.gz" -mtime +30 -delete
