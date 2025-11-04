@@ -93,9 +93,11 @@ $router->post('/api/cases/fetch-evolution', 'CaseController@fetchEvolutionCase')
 $router->get('/api/dashboard/stats', 'DashboardController@apiStats');
 
 // Import Routes
-$router->get('/import', 'ImportController@index');
-$router->post('/import/evolution', 'ImportController@importEvolution');
-$router->post('/import/test-connection', 'ImportController@testConnection');
+$router->get('/imports', 'ImportController@index');
+$router->post('/imports/execute', 'ImportController@execute');
+$router->get('/imports/results', 'ImportController@results');
+$router->post('/imports/test-connection', 'ImportController@testConnection');
+$router->get('/api/imports/history', 'ImportController@apiHistory');
 
 // Windows App Integration API
 $router->post('/api/import/3dprint', 'WindowsAppImportController@import3DPrint');
