@@ -417,7 +417,83 @@ class CaseController extends Controller
     {
         $this->requireAnyRole(['super_admin', 'admin', 'manager']);
 
-        // This will be implemented in Phase 3 with Evolution integration
-        $this->error('Evolution Portal integration not yet implemented', 501);
+        try {
+            // Get request data
+            $input = json_decode(file_get_contents('php://input'), true);
+            $caseNumber = $input['case_number'] ?? '';
+            $location = $input['location'] ?? 'HV';
+
+            if (empty($caseNumber)) {
+                $this->error('Case number is required', 400);
+                return;
+            }
+
+            // Validate location
+            if (!in_array($location, ['HV', 'NYC'])) {
+                $this->error('Invalid location. Must be HV or NYC', 400);
+                return;
+            }
+
+            // Load configuration
+            $config = require BASE_PATH . '/config/config.php';
+
+            // Initialize Evolution Client
+            $evolutionClient = new \App\Services\EvolutionClient($config);
+
+            $caseData = null;
+            $source = 'sql_server';
+            $errors = [];
+
+            // Try SQL Server direct connection first (preferred method)
+            try {
+                $this->log("Attempting to fetch case {$caseNumber} from SQL Server ({$location})");
+                $caseData = $evolutionClient->getCaseFromSQLServer($caseNumber, $location);
+
+                if ($caseData) {
+                    $this->log("Successfully fetched case {$caseNumber} from SQL Server");
+                }
+            } catch (\Exception $e) {
+                $this->log("SQL Server fetch failed: " . $e->getMessage(), 'warning');
+                $errors['sql_server'] = $e->getMessage();
+            }
+
+            // Fall back to XML API if SQL Server failed
+            if (!$caseData) {
+                try {
+                    $this->log("Attempting to fetch case {$caseNumber} from Evolution XML API");
+                    $caseData = $evolutionClient->getCaseInformation($caseNumber);
+                    $source = 'xml_api';
+
+                    if ($caseData) {
+                        $this->log("Successfully fetched case {$caseNumber} from XML API");
+                    }
+                } catch (\Exception $e) {
+                    $this->log("XML API fetch failed: " . $e->getMessage(), 'warning');
+                    $errors['xml_api'] = $e->getMessage();
+                }
+            }
+
+            // If both methods failed, return error
+            if (!$caseData) {
+                $errorMessage = "Could not fetch case from Evolution Portal. ";
+                if (!empty($errors)) {
+                    $errorMessage .= "Errors: " . json_encode($errors);
+                }
+                $this->error($errorMessage, 404);
+                return;
+            }
+
+            // Return success with case data
+            $this->success([
+                'data' => $caseData,
+                'source' => $source,
+                'location' => $location,
+                'timestamp' => date('Y-m-d H:i:s')
+            ], 'Case fetched successfully from Evolution Portal');
+
+        } catch (\Exception $e) {
+            $this->log('Error fetching Evolution case: ' . $e->getMessage(), 'error');
+            $this->error($e->getMessage(), 500);
+        }
     }
 }
