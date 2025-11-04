@@ -103,6 +103,8 @@ $router->get('/api/imports/history', 'ImportController@apiHistory');
 $router->post('/api/import/3dprint', 'WindowsAppImportController@import3DPrint');
 $router->post('/api/import/cocr', 'WindowsAppImportController@importCoCr');
 $router->post('/api/import/solidex', 'WindowsAppImportController@importSolidex');
+$router->get('/api/case/status', 'WindowsAppImportController@getCaseStatus');
+$router->get('/api/health', 'WindowsAppImportController@healthCheck');
 
 // Admin Routes (super_admin, admin only)
 $router->get('/admin/users', 'AdminController@users');
