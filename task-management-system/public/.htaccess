@@ -1,0 +1,22 @@
+# Public directory configuration
+
+RewriteEngine On
+
+# Redirect to login if accessing root
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^$ login.php [L]
+
+# Clean URL routing (optional)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-zA-Z0-9_-]+)$ $1.php [L]
+
+# Set default page
+DirectoryIndex index.php
+
+# PHP settings
+php_value upload_max_filesize 10M
+php_value post_max_size 10M
+php_value max_execution_time 300
+php_value max_input_time 300
