@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/../includes/Auth.php';
-require_once __DIR__ . '/../includes/Security.php';
-require_once __DIR__ . '/../includes/TaskManager.php';
+require_once __DIR__ . '/includes/Auth.php';
+require_once __DIR__ . '/includes/Security.php';
+require_once __DIR__ . '/includes/TaskManager.php';
 
 $auth = new Auth();
 $auth->requireLogin();
@@ -21,7 +21,7 @@ $pageTitle = 'Dashboard - Task Management System';
 $showNav = true;
 ?>
 
-<?php include __DIR__ . '/../views/layouts/header.php'; ?>
+<?php include __DIR__ . '/views/layouts/header.php'; ?>
 
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="mb-6">
@@ -92,7 +92,7 @@ $showNav = true;
         <h2 class="text-lg font-medium text-gray-900">Quick Navigation</h2>
         <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <?php if ($auth->isAdmin() || $auth->isFrontDesk()): ?>
-            <a href="/public/front-desk.php" class="block rounded-lg bg-white p-6 shadow hover:bg-gray-50">
+            <a href="/front-desk.php" class="block rounded-lg bg-white p-6 shadow hover:bg-gray-50">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <i class="fas fa-th-list text-3xl text-blue-600"></i>
@@ -106,7 +106,7 @@ $showNav = true;
             <?php endif; ?>
 
             <?php if ($auth->isAdmin() || $auth->getDepartmentId() == 2): ?>
-            <a href="/public/solidex.php" class="block rounded-lg bg-white p-6 shadow hover:bg-gray-50">
+            <a href="/solidex.php" class="block rounded-lg bg-white p-6 shadow hover:bg-gray-50">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <i class="fas fa-tooth text-3xl text-purple-600"></i>
@@ -120,7 +120,7 @@ $showNav = true;
             <?php endif; ?>
 
             <?php if ($auth->isAdmin() || $auth->getDepartmentId() == 3): ?>
-            <a href="/public/cocr.php" class="block rounded-lg bg-white p-6 shadow hover:bg-gray-50">
+            <a href="/cocr.php" class="block rounded-lg bg-white p-6 shadow hover:bg-gray-50">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <i class="fas fa-crown text-3xl text-yellow-600"></i>
@@ -134,7 +134,7 @@ $showNav = true;
             <?php endif; ?>
 
             <?php if ($auth->isAdmin() || $auth->getDepartmentId() == 4): ?>
-            <a href="/public/3d-print.php" class="block rounded-lg bg-white p-6 shadow hover:bg-gray-50">
+            <a href="/3d-print.php" class="block rounded-lg bg-white p-6 shadow hover:bg-gray-50">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <i class="fas fa-cube text-3xl text-green-600"></i>
@@ -148,7 +148,7 @@ $showNav = true;
             <?php endif; ?>
 
             <?php if ($auth->isAdmin()): ?>
-            <a href="/public/admin.php" class="block rounded-lg bg-white p-6 shadow hover:bg-gray-50">
+            <a href="/admin.php" class="block rounded-lg bg-white p-6 shadow hover:bg-gray-50">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <i class="fas fa-cog text-3xl text-gray-600"></i>
@@ -164,4 +164,4 @@ $showNav = true;
     </div>
 </div>
 
-<?php include __DIR__ . '/../views/layouts/footer.php'; ?>
+<?php include __DIR__ . '/views/layouts/footer.php'; ?>

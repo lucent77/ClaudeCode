@@ -4,9 +4,9 @@
  * Handles user management operations (admin only)
  */
 
-require_once __DIR__ . '/../../includes/Auth.php';
-require_once __DIR__ . '/../../includes/Security.php';
-require_once __DIR__ . '/../../includes/UserManager.php';
+require_once __DIR__ . '/../includes/Auth.php';
+require_once __DIR__ . '/../includes/Security.php';
+require_once __DIR__ . '/../includes/UserManager.php';
 
 header('Content-Type: application/json');
 

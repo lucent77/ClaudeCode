@@ -4,9 +4,9 @@
  * Handles CRUD operations for tasks
  */
 
-require_once __DIR__ . '/../../includes/Auth.php';
-require_once __DIR__ . '/../../includes/Security.php';
-require_once __DIR__ . '/../../includes/TaskManager.php';
+require_once __DIR__ . '/../includes/Auth.php';
+require_once __DIR__ . '/../includes/Security.php';
+require_once __DIR__ . '/../includes/TaskManager.php';
 
 header('Content-Type: application/json');
 

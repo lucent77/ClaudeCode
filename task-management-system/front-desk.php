@@ -1,15 +1,15 @@
 <?php
-require_once __DIR__ . '/../includes/Auth.php';
-require_once __DIR__ . '/../includes/Security.php';
-require_once __DIR__ . '/../includes/TaskManager.php';
-require_once __DIR__ . '/../includes/UserManager.php';
+require_once __DIR__ . '/includes/Auth.php';
+require_once __DIR__ . '/includes/Security.php';
+require_once __DIR__ . '/includes/TaskManager.php';
+require_once __DIR__ . '/includes/UserManager.php';
 
 $auth = new Auth();
 $auth->requireLogin();
 
 // Only admin and front desk can access
 if (!$auth->isAdmin() && !$auth->isFrontDesk()) {
-    header('Location: /public/index.php');
+    header('Location: /index.php');
     exit;
 }
 
@@ -36,7 +36,7 @@ $pageTitle = 'Front Desk - All Tasks';
 $showNav = true;
 ?>
 
-<?php include __DIR__ . '/../views/layouts/header.php'; ?>
+<?php include __DIR__ . '/views/layouts/header.php'; ?>
 
 <div class="mx-auto max-w-full px-4 sm:px-6 lg:px-8">
     <div class="mb-6 flex items-center justify-between">
@@ -327,7 +327,7 @@ function createTask(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
 
-    fetch('/public/api/tasks.php', {
+    fetch('/api/tasks.php', {
         method: 'POST',
         body: formData
     })
@@ -351,7 +351,7 @@ function updateTaskStatus(select) {
     const taskId = select.dataset.taskId;
     const statusId = select.value;
 
-    fetch(`/public/api/tasks.php?id=${taskId}`, {
+    fetch(`/api/tasks.php?id=${taskId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -384,7 +384,7 @@ function importJSON(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
 
-    fetch('/public/api/import.php', {
+    fetch('/api/import.php', {
         method: 'POST',
         body: formData
     })
@@ -405,4 +405,4 @@ function importJSON(event) {
 }
 </script>
 
-<?php include __DIR__ . '/../views/layouts/footer.php'; ?>
+<?php include __DIR__ . '/views/layouts/footer.php'; ?>

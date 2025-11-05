@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__ . '/../includes/Auth.php';
-require_once __DIR__ . '/../includes/Security.php';
-require_once __DIR__ . '/../includes/TaskManager.php';
-require_once __DIR__ . '/../includes/UserManager.php';
+require_once __DIR__ . '/includes/Auth.php';
+require_once __DIR__ . '/includes/Security.php';
+require_once __DIR__ . '/includes/TaskManager.php';
+require_once __DIR__ . '/includes/UserManager.php';
 
 $auth = new Auth();
 $auth->requireAdmin();
@@ -20,7 +20,7 @@ $pageTitle = 'Admin Dashboard';
 $showNav = true;
 ?>
 
-<?php include __DIR__ . '/../views/layouts/header.php'; ?>
+<?php include __DIR__ . '/views/layouts/header.php'; ?>
 
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="mb-6">
@@ -261,7 +261,7 @@ function saveUser(event) {
         }
     }
 
-    const url = userId ? `/public/api/users.php?id=${userId}` : '/public/api/users.php';
+    const url = userId ? `/api/users.php?id=${userId}` : '/api/users.php';
     const method = userId ? 'PUT' : 'POST';
 
     fetch(url, {
@@ -293,7 +293,7 @@ function toggleUserStatus(userId, status) {
         return;
     }
 
-    fetch(`/public/api/users.php?id=${userId}`, {
+    fetch(`/api/users.php?id=${userId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -315,7 +315,7 @@ function deleteUser(userId, userName) {
         return;
     }
 
-    fetch(`/public/api/users.php?id=${userId}`, {
+    fetch(`/api/users.php?id=${userId}`, {
         method: 'DELETE'
     })
     .then(response => response.json())
@@ -330,4 +330,4 @@ function deleteUser(userId, userName) {
 }
 </script>
 
-<?php include __DIR__ . '/../views/layouts/footer.php'; ?>
+<?php include __DIR__ . '/views/layouts/footer.php'; ?>

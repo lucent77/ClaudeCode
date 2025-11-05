@@ -42,7 +42,7 @@ function stopPolling() {
  * Check for task updates
  */
 function checkForUpdates(departmentId = null) {
-    let url = `/public/api/tasks.php?since=${encodeURIComponent(lastUpdateTimestamp)}`;
+    let url = `/api/tasks.php?since=${encodeURIComponent(lastUpdateTimestamp)}`;
 
     if (departmentId) {
         url += `&department_id=${departmentId}`;

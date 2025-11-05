@@ -1,19 +1,19 @@
 <?php
-require_once __DIR__ . '/../includes/Auth.php';
-require_once __DIR__ . '/../includes/Security.php';
-require_once __DIR__ . '/../includes/TaskManager.php';
+require_once __DIR__ . '/includes/Auth.php';
+require_once __DIR__ . '/includes/Security.php';
+require_once __DIR__ . '/includes/TaskManager.php';
 
 $auth = new Auth();
 $auth->requireLogin();
 
-$departmentId = 2; // Solidex department ID
-$departmentName = 'Solidex';
-$departmentCode = 'SOLIDEX';
-$departmentIcon = '<i class="fas fa-tooth mr-2"></i>';
+$departmentId = 3; // COCR department ID
+$departmentName = 'COCR';
+$departmentCode = 'COCR';
+$departmentIcon = '<i class="fas fa-crown mr-2"></i>';
 
 // Check access
 if (!$auth->canAccessDepartment($departmentId)) {
-    header('Location: /public/index.php');
+    header('Location: /index.php');
     exit;
 }
 
@@ -33,13 +33,13 @@ if (isset($_GET['date_from'])) {
 
 $tasks = $taskManager->getTasks($filters);
 
-// Define columns for Solidex
+// Define columns for COCR
 $columns = [
     ['label' => 'ID', 'field' => 'external_id', 'nowrap' => true],
     ['label' => 'Date', 'field' => 'date', 'nowrap' => true],
-    ['label' => 'Due Date', 'field' => 'due_date', 'nowrap' => true],
-    ['label' => 'Teeth', 'field' => 'teeth'],
-    ['label' => 'Implant System', 'field' => 'implant_system'],
+    ['label' => 'Type', 'field' => 'type'],
+    ['label' => 'Tooth #', 'field' => 'tooth'],
+    ['label' => 'Implant Type', 'field' => 'implant_type'],
     ['label' => 'Design', 'field' => 'design'],
     ['label' => 'Lab', 'field' => 'lab'],
     ['label' => 'Notes', 'field' => 'notes']
@@ -49,18 +49,18 @@ $columns = [
 $formFields = [
     ['name' => 'external_id', 'label' => 'ID', 'type' => 'text'],
     ['name' => 'date', 'label' => 'Date', 'type' => 'date', 'default' => date('Y-m-d')],
-    ['name' => 'due_date', 'label' => 'Due Date', 'type' => 'date', 'required' => true],
-    ['name' => 'teeth', 'label' => 'Teeth', 'type' => 'text'],
-    ['name' => 'implant_system', 'label' => 'Implant System', 'type' => 'text'],
+    ['name' => 'type', 'label' => 'Type (CR, BRIDGE, etc)', 'type' => 'text'],
+    ['name' => 'tooth', 'label' => 'Tooth #', 'type' => 'text'],
+    ['name' => 'implant_type', 'label' => 'Implant Type', 'type' => 'text', 'fullWidth' => true],
     ['name' => 'design', 'label' => 'Design', 'type' => 'text'],
-    ['name' => 'lab', 'label' => 'Lab', 'type' => 'text', 'fullWidth' => true],
+    ['name' => 'lab', 'label' => 'Lab', 'type' => 'text'],
     ['name' => 'notes', 'label' => 'Notes', 'type' => 'textarea', 'fullWidth' => true]
 ];
 
-$pageTitle = 'Solidex Department';
+$pageTitle = 'COCR Department';
 $showNav = true;
 ?>
 
-<?php include __DIR__ . '/../views/layouts/header.php'; ?>
-<?php include __DIR__ . '/../views/components/department_tasks.php'; ?>
-<?php include __DIR__ . '/../views/layouts/footer.php'; ?>
+<?php include __DIR__ . '/views/layouts/header.php'; ?>
+<?php include __DIR__ . '/views/components/department_tasks.php'; ?>
+<?php include __DIR__ . '/views/layouts/footer.php'; ?>

@@ -137,7 +137,7 @@ Edit `config/app.php` to customize:
 ### Real-Time Updates
 The system uses AJAX polling by default (5-second interval). To use Server-Sent Events (SSE):
 1. Set `'method' => 'sse'` in `config/app.php`
-2. Create an SSE endpoint in `public/api/sse.php`
+2. Create an SSE endpoint in `api/sse.php`
 3. Update JavaScript to use EventSource
 
 ## Usage
@@ -190,6 +190,10 @@ Click the history icon (clock) next to any task to view all changes made to that
 
 ```
 task-management-system/
+├── api/                  # API endpoints
+│   ├── import.php        # JSON import
+│   ├── tasks.php         # Task CRUD
+│   └── users.php         # User management
 ├── assets/
 │   ├── css/              # CSS files
 │   └── js/
@@ -206,25 +210,24 @@ task-management-system/
 │   ├── Security.php      # Security utilities
 │   ├── TaskManager.php   # Task operations
 │   └── UserManager.php   # User management
-├── public/
-│   ├── api/              # API endpoints
-│   │   ├── import.php    # JSON import
-│   │   ├── tasks.php     # Task CRUD
-│   │   └── users.php     # User management
-│   ├── 3d-print.php      # 3D Print department
-│   ├── admin.php         # Admin dashboard
-│   ├── cocr.php          # COCR department
-│   ├── front-desk.php    # Front Desk page
-│   ├── index.php         # Main dashboard
-│   ├── login.php         # Login page
-│   ├── logout.php        # Logout handler
-│   └── solidex.php       # Solidex department
-├── uploads/              # Uploaded files
 ├── logs/                 # Application logs
-└── views/
-    ├── components/       # Reusable components
-    └── layouts/          # Page layouts
+├── uploads/              # Uploaded files
+├── views/
+│   ├── components/       # Reusable components
+│   └── layouts/          # Page layouts
+├── 3d-print.php          # 3D Print department
+├── admin.php             # Admin dashboard
+├── cocr.php              # COCR department
+├── front-desk.php        # Front Desk page
+├── index.php             # Main dashboard
+├── login.php             # Login page
+├── logout.php            # Logout handler
+├── solidex.php           # Solidex department
+├── .htaccess             # Apache configuration
+└── README.md             # This file
 ```
+
+**Note:** All main PHP files are in the root directory for easy Hostinger deployment.
 
 ## Security Considerations
 
@@ -273,18 +276,18 @@ Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 
 ## API Documentation
 
-### Tasks API (`/public/api/tasks.php`)
+### Tasks API (`/api/tasks.php`)
 
 #### Get Tasks
 ```
-GET /public/api/tasks.php
-GET /public/api/tasks.php?department_id=2
-GET /public/api/tasks.php?since=2025-11-05%2012:00:00
+GET /api/tasks.php
+GET /api/tasks.php?department_id=2
+GET /api/tasks.php?since=2025-11-05%2012:00:00
 ```
 
 #### Create Task
 ```
-POST /public/api/tasks.php
+POST /api/tasks.php
 Content-Type: application/json
 
 {
@@ -299,7 +302,7 @@ Content-Type: application/json
 
 #### Update Task
 ```
-PUT /public/api/tasks.php?id=123
+PUT /api/tasks.php?id=123
 Content-Type: application/json
 
 {
@@ -310,20 +313,20 @@ Content-Type: application/json
 
 #### Delete Task (Admin Only)
 ```
-DELETE /public/api/tasks.php?id=123
+DELETE /api/tasks.php?id=123
 ```
 
-### Users API (`/public/api/users.php`) - Admin Only
+### Users API (`/api/users.php`) - Admin Only
 
 #### Get Users
 ```
-GET /public/api/users.php
-GET /public/api/users.php?id=5
+GET /api/users.php
+GET /api/users.php?id=5
 ```
 
 #### Create User
 ```
-POST /public/api/users.php
+POST /api/users.php
 Content-Type: application/json
 
 {

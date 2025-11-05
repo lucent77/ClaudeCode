@@ -207,7 +207,7 @@ function createTask(event, departmentId) {
     const formData = new FormData(event.target);
     formData.append('department_id', departmentId);
 
-    fetch('/public/api/tasks.php', {
+    fetch('/api/tasks.php', {
         method: 'POST',
         body: formData
     })
@@ -231,7 +231,7 @@ function updateTaskStatus(select) {
     const taskId = select.dataset.taskId;
     const statusId = select.value;
 
-    fetch(`/public/api/tasks.php?id=${taskId}`, {
+    fetch(`/api/tasks.php?id=${taskId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'

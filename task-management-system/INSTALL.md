@@ -119,13 +119,13 @@ return [
 1. In hPanel, go to **Domains** → **Subdomains**
 2. Click **"Create Subdomain"**
 3. Subdomain: `tasks` (creates tasks.yourdomain.com)
-4. Document Root: `public_html/task-management-system/public`
+4. Document Root: `public_html/task-management-system`
 5. Click **"Create"**
 
 #### Option B: Main Domain
 1. Go to **Domains** → **Manage**
 2. Click on your domain
-3. Change **Document Root** to: `public_html/task-management-system/public`
+3. Change **Document Root** to: `public_html/task-management-system`
 4. Click **"Save"**
 
 ### Step 9: Set File Permissions (Important!)
@@ -185,7 +185,7 @@ Default credentials:
    ```
 
 6. **Access Application**
-   - Navigate to http://localhost/task-management-system/public/
+   - Navigate to http://localhost/task-management-system/
 
 ### Using MAMP (Mac)
 
@@ -196,7 +196,7 @@ Similar to XAMPP:
 4. Access phpMyAdmin at http://localhost:8888/phpMyAdmin
 5. Import database schema
 6. Configure `config/database.php`
-7. Access at http://localhost:8888/task-management-system/public/
+7. Access at http://localhost:8888/task-management-system/
 
 ## VPS/Dedicated Server Installation
 
@@ -394,7 +394,7 @@ sudo chown -R www-data:www-data /path/to/task-management-system
 1. Open browser developer console (F12)
 2. Check for JavaScript errors
 3. Go to Network tab
-4. Verify AJAX requests to `/public/api/tasks.php?since=...` are successful
+4. Verify AJAX requests to `/api/tasks.php?since=...` are successful
 5. Check `assets/js/app.js` is loading
 6. Clear browser cache
 

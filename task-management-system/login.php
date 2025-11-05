@@ -1,12 +1,12 @@
 <?php
-require_once __DIR__ . '/../includes/Auth.php';
-require_once __DIR__ . '/../includes/Security.php';
+require_once __DIR__ . '/includes/Auth.php';
+require_once __DIR__ . '/includes/Security.php';
 
 $auth = new Auth();
 
 // Redirect if already logged in
 if ($auth->isLoggedIn()) {
-    header('Location: /public/index.php');
+    header('Location: /index.php');
     exit;
 }
 
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $auth->login($email, $password);
 
         if ($result['success']) {
-            header('Location: /public/index.php');
+            header('Location: /index.php');
             exit;
         } else {
             $error = $result['message'];
@@ -35,7 +35,7 @@ $pageTitle = 'Login - Task Management System';
 $showNav = false;
 ?>
 
-<?php include __DIR__ . '/../views/layouts/header.php'; ?>
+<?php include __DIR__ . '/views/layouts/header.php'; ?>
 
 <div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
@@ -109,4 +109,4 @@ $showNav = false;
     </div>
 </div>
 
-<?php include __DIR__ . '/../views/layouts/footer.php'; ?>
+<?php include __DIR__ . '/views/layouts/footer.php'; ?>

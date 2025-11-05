@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/../includes/Auth.php';
-require_once __DIR__ . '/../includes/Security.php';
-require_once __DIR__ . '/../includes/TaskManager.php';
+require_once __DIR__ . '/includes/Auth.php';
+require_once __DIR__ . '/includes/Security.php';
+require_once __DIR__ . '/includes/TaskManager.php';
 
 $auth = new Auth();
 $auth->requireLogin();
@@ -13,7 +13,7 @@ $departmentIcon = '<i class="fas fa-cube mr-2"></i>';
 
 // Check access
 if (!$auth->canAccessDepartment($departmentId)) {
-    header('Location: /public/index.php');
+    header('Location: /index.php');
     exit;
 }
 
@@ -61,6 +61,6 @@ $pageTitle = '3D Print Department';
 $showNav = true;
 ?>
 
-<?php include __DIR__ . '/../views/layouts/header.php'; ?>
-<?php include __DIR__ . '/../views/components/department_tasks.php'; ?>
-<?php include __DIR__ . '/../views/layouts/footer.php'; ?>
+<?php include __DIR__ . '/views/layouts/header.php'; ?>
+<?php include __DIR__ . '/views/components/department_tasks.php'; ?>
+<?php include __DIR__ . '/views/layouts/footer.php'; ?>
