@@ -1,0 +1,49 @@
+# Purchase Management System .gitignore
+
+# Configuration file with sensitive data
+config/config.php
+!config/config.example.php
+
+# Uploaded files
+uploads/*
+!uploads/.gitkeep
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Log files
+*.log
+error_log
+debug.log
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Environment files
+.env
+.env.local
+
+# Cache
+cache/*
+tmp/*
+
+# Composer (if you add it later)
+/vendor/
+composer.lock
