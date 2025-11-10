@@ -35,11 +35,18 @@ Swissturn 부서의 생산 현황과 공구를 통합 관리하는 웹 기반 �
 
 ## 기술 스택
 
-- **Frontend**: React 18
+### Frontend
+- **Framework**: React 18
 - **Styling**: Tailwind CSS
 - **Build Tool**: Vite
 - **State Management**: React Context API
 - **Icons**: Lucide React
+
+### Backend
+- **Language**: PHP 7.4+
+- **Database**: MySQL 5.7+ / MariaDB 10.3+
+- **API**: REST API (JSON)
+- **Authentication**: Password Hashing (bcrypt)
 
 ## 설치 및 실행
 
