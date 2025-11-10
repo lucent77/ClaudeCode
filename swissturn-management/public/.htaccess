@@ -1,6 +1,11 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # API 라우팅 - api/ 경로는 api/index.php로 전달
+  RewriteRule ^api/(.*)$ api/index.php [QSA,L]
+
+  # React SPA 라우팅
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d

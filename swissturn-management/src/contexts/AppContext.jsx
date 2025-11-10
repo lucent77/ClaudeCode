@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import api from '../services/api';
 
 const AppContext = createContext();
 
@@ -11,197 +12,134 @@ export const useApp = () => {
 };
 
 export const AppProvider = ({ children }) => {
-  const [user, setUser] = useState({ role: 'admin', name: '관리자' }); // admin or operator
-  const [machines, setMachines] = useState([
-    {
-      id: 'MP1',
-      name: 'MP1',
-      status: 'running',
-      currentJob: null,
-      tools: [],
-      oee: 0,
-      runtime: 0,
-      downtime: 0
-    },
-    {
-      id: 'MP2',
-      name: 'MP2',
-      status: 'idle',
-      currentJob: null,
-      tools: [],
-      oee: 0,
-      runtime: 0,
-      downtime: 0
-    },
-    {
-      id: 'MP3',
-      name: 'MP3',
-      status: 'running',
-      currentJob: null,
-      tools: [],
-      oee: 0,
-      runtime: 0,
-      downtime: 0
-    },
-    {
-      id: 'HW1',
-      name: 'HW1',
-      status: 'maintenance',
-      currentJob: null,
-      tools: [],
-      oee: 0,
-      runtime: 0,
-      downtime: 0
-    },
-    {
-      id: 'HW2',
-      name: 'HW2',
-      status: 'running',
-      currentJob: null,
-      tools: [],
-      oee: 0,
-      runtime: 0,
-      downtime: 0
-    },
-    {
-      id: 'HW3',
-      name: 'HW3',
-      status: 'running',
-      currentJob: null,
-      tools: [],
-      oee: 0,
-      runtime: 0,
-      downtime: 0
-    },
-    {
-      id: 'HW4',
-      name: 'HW4',
-      status: 'running',
-      currentJob: null,
-      tools: [],
-      oee: 0,
-      runtime: 0,
-      downtime: 0
-    },
-    {
-      id: 'HW5',
-      name: 'HW5',
-      status: 'running',
-      currentJob: null,
-      tools: [],
-      oee: 0,
-      runtime: 0,
-      downtime: 0
-    }
-  ]);
-
+  const [user, setUser] = useState({ role: 'admin', name: '관리자' });
+  const [machines, setMachines] = useState([]);
   const [tools, setTools] = useState([]);
   const [usedTools, setUsedTools] = useState([]);
   const [productionData, setProductionData] = useState([]);
   const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Load initial data from CSV
+  // 초기 데이터 로드
   useEffect(() => {
     loadInitialData();
   }, []);
 
   const loadInitialData = async () => {
-    // This will be implemented to load CSV data
-    // For now, we'll use sample data
-    const sampleTools = [
-      {
-        id: 'D-08',
-        code: 'D-08',
-        name: '.80 DRILL',
-        category: 'TWIST DRILL',
-        size: '0.8',
-        supplier: 'N/A',
-        supplierModel: 'N/A',
-        currentStock: 5,
-        minStock: 5,
-        lifespanType: 'time',
-        lifespanLimit: 200,
-        currentUsage: 0,
-        status: 'available',
-        description: 'High-speed steel drill bit for general purpose drilling',
-        machineId: null
-      },
-      {
-        id: 'D-11',
-        code: 'D-11',
-        name: '1.1 DRILL',
-        category: 'TWIST DRILL',
-        size: '1.1',
-        supplier: 'N/A',
-        supplierModel: 'N/A',
-        currentStock: 5,
-        minStock: 5,
-        lifespanType: 'time',
-        lifespanLimit: 200,
-        currentUsage: 0,
-        status: 'available',
-        description: 'Carbide end mill for precision milling operations',
-        machineId: null
+    try {
+      setLoading(true);
+
+      // 병렬로 데이터 로드
+      const [machinesRes, toolsRes, usedToolsRes] = await Promise.all([
+        api.machines.getAll().catch(() => ({ data: [] })),
+        api.tools.getAll().catch(() => ({ data: [] })),
+        api.tools.getUsed().catch(() => ({ data: [] }))
+      ]);
+
+      setMachines(machinesRes.data || []);
+      setTools(toolsRes.data || []);
+      setUsedTools(usedToolsRes.data || []);
+    } catch (error) {
+      console.error('Failed to load initial data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateMachine = async (machineId, updates) => {
+    try {
+      const res = await api.machines.update(machineId, updates);
+
+      if (res.success) {
+        setMachines(prev => prev.map(m =>
+          m.id === machineId ? { ...m, ...updates } : m
+        ));
       }
-    ];
-    setTools(sampleTools);
-  };
-
-  const updateMachine = (machineId, updates) => {
-    setMachines(prev => prev.map(m =>
-      m.id === machineId ? { ...m, ...updates } : m
-    ));
-  };
-
-  const addTool = (tool) => {
-    setTools(prev => [...prev, { ...tool, id: `TOOL-${Date.now()}` }]);
-  };
-
-  const updateTool = (toolId, updates) => {
-    setTools(prev => prev.map(t =>
-      t.id === toolId ? { ...t, ...updates } : t
-    ));
-  };
-
-  const replaceTool = (oldToolId, newTool) => {
-    // Move old tool to used tools
-    const oldTool = tools.find(t => t.id === oldToolId);
-    if (oldTool) {
-      setUsedTools(prev => [...prev, {
-        ...oldTool,
-        replacedAt: new Date().toISOString(),
-        finalUsage: oldTool.currentUsage
-      }]);
-    }
-
-    // Add new tool
-    addTool(newTool);
-
-    // Remove old tool from active tools
-    setTools(prev => prev.filter(t => t.id !== oldToolId));
-  };
-
-  const assignToolToMachine = (toolId, machineId) => {
-    updateTool(toolId, { machineId, status: 'in-use' });
-
-    const tool = tools.find(t => t.id === toolId);
-    if (tool) {
-      updateMachine(machineId, {
-        tools: [...(machines.find(m => m.id === machineId)?.tools || []), toolId]
-      });
+    } catch (error) {
+      console.error('Failed to update machine:', error);
+      throw error;
     }
   };
 
-  const removeToolFromMachine = (toolId, machineId) => {
-    updateTool(toolId, { machineId: null, status: 'available' });
+  const addTool = async (tool) => {
+    try {
+      const res = await api.tools.create(tool);
 
-    updateMachine(machineId, {
-      tools: machines.find(m => m.id === machineId)?.tools.filter(t => t !== toolId) || []
-    });
+      if (res.success) {
+        // 새로 생성된 공구 다시 로드
+        const toolRes = await api.tools.getOne(res.data.id);
+        setTools(prev => [...prev, toolRes.data]);
+      }
+    } catch (error) {
+      console.error('Failed to add tool:', error);
+      throw error;
+    }
   };
 
-  const addProductionRecord = (record) => {
-    setProductionData(prev => [...prev, { ...record, id: `PROD-${Date.now()}` }]);
+  const updateTool = async (toolId, updates) => {
+    try {
+      const res = await api.tools.update(toolId, updates);
+
+      if (res.success) {
+        setTools(prev => prev.map(t =>
+          t.id === toolId ? { ...t, ...updates } : t
+        ));
+      }
+    } catch (error) {
+      console.error('Failed to update tool:', error);
+      throw error;
+    }
+  };
+
+  const replaceTool = async (oldToolId, newTool) => {
+    try {
+      const res = await api.tools.replace(oldToolId, newTool);
+
+      if (res.success) {
+        // 데이터 다시 로드
+        const [toolsRes, usedToolsRes] = await Promise.all([
+          api.tools.getAll(),
+          api.tools.getUsed()
+        ]);
+
+        setTools(toolsRes.data);
+        setUsedTools(usedToolsRes.data);
+      }
+    } catch (error) {
+      console.error('Failed to replace tool:', error);
+      throw error;
+    }
+  };
+
+  const assignToolToMachine = async (toolId, machineId) => {
+    try {
+      await updateTool(toolId, { machineId, status: 'in-use' });
+    } catch (error) {
+      console.error('Failed to assign tool to machine:', error);
+      throw error;
+    }
+  };
+
+  const removeToolFromMachine = async (toolId, machineId) => {
+    try {
+      await updateTool(toolId, { machineId: null, status: 'available' });
+    } catch (error) {
+      console.error('Failed to remove tool from machine:', error);
+      throw error;
+    }
+  };
+
+  const addProductionRecord = async (record) => {
+    try {
+      const res = await api.production.create(record);
+
+      if (res.success) {
+        setProductionData(prev => [...prev, { ...record, id: res.data.id }]);
+      }
+    } catch (error) {
+      console.error('Failed to add production record:', error);
+      throw error;
+    }
   };
 
   const value = {
@@ -219,7 +157,9 @@ export const AppProvider = ({ children }) => {
     productionData,
     addProductionRecord,
     jobs,
-    setJobs
+    setJobs,
+    loading,
+    refreshData: loadInitialData
   };
 
   return (
