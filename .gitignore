@@ -1,0 +1,42 @@
+# Swissturn Production Management System
+# .gitignore
+
+# Uploaded files
+uploads/*
+!uploads/.gitkeep
+
+# Configuration files with sensitive data
+config/database.php
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+error_log
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+
+# Composer
+vendor/
+composer.lock
+
+# Node modules (if using npm)
+node_modules/
+package-lock.json
+
+# Environment files
+.env
+.env.local
+.env.production
