@@ -1,0 +1,11 @@
+Tool Code,Tool Name,Category Name,Tool Size,Supplier Name,Supplier Model Number,Current Stock,Minimum Stock,Lifespan Type,Lifespan Limit,Description
+D-08,.80 DRILL,TWIST DRILL,0.8,N/A,N/A,5,5,time,200,High-speed steel drill bit for general purpose drilling
+D-11,1.1 DRILL,TWIST DRILL,1.1,N/A,N/A,5,5,time,200,Carbide drill bit for precision drilling operations
+D-115,1.15 DRILL,TWIST DRILL,1.15*2.5-4*50L,J-GIGONG,1.15 (N/A),1,1,time,200,Specialized drill bit for specific applications
+EM-06,6MM END MILL,END MILL,6,SPHINX TOOL,ART56033,8,8,time,150,Carbide end mill for milling operations
+EM-08,8MM END MILL,END MILL,8,SPHINX TOOL,ART56034,6,6,time,150,High-performance end mill
+TAP-M6,M6 TAP,TAP,M6x1.0,GUHRING,3899-1200,3,3,time,100,Thread tap for M6 threads
+TAP-M8,M8 TAP,TAP,M8x1.25,GUHRING,3899-1600,3,3,time,100,Thread tap for M8 threads
+REAMER-8,8MM REAMER,REAMER,8.0,OSG,3300800,4,4,time,120,Precision reamer
+REAMER-10,10MM REAMER,REAMER,10.0,OSG,3301000,4,4,time,120,Precision reamer
+INSERT-01,TURNING INSERT,INSERT,CNMG120408,SANDVIK,CNMG120408-PM,20,10,cycles,5000,Tungsten carbide turning insert
