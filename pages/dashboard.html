@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2563EB">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+
+    <title>Dashboard - Price Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .product-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Price Tracker</h1>
+                <p class="text-sm text-gray-600" id="userEmail"></p>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Push Notification Toggle -->
+                <button
+                    id="notificationBtn"
+                    class="hidden bg-blue-50 text-blue-600 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-100 transition"
+                >
+                    Enable Alerts
+                </button>
+
+                <!-- Logout Button -->
+                <button
+                    id="logoutBtn"
+                    class="text-gray-600 hover:text-gray-900 transition"
+                    title="Logout"
+                >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-white rounded-2xl p-6 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">Total Products</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-1" id="totalProducts">0</p>
+                    </div>
+                    <div class="bg-blue-100 w-12 h-12 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">Avg. Price</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-1" id="avgPrice">$0</p>
+                    </div>
+                    <div class="bg-green-100 w-12 h-12 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">Last Checked</p>
+                        <p class="text-lg font-bold text-gray-900 mt-1" id="lastChecked">Never</p>
+                    </div>
+                    <div class="bg-purple-100 w-12 h-12 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Product Button -->
+        <div class="mb-6">
+            <a
+                href="/pages/add_product.html"
+                class="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition shadow-lg hover:shadow-xl"
+            >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Track New Product
+            </a>
+        </div>
+
+        <!-- Products List -->
+        <div id="productsContainer">
+            <div class="text-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                <p class="text-gray-600 mt-4">Loading products...</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/push.js"></script>
+    <script>
+        // Require authentication
+        if (!App.requireAuth()) {
+            window.location.href = '/pages/login.html';
+        }
+
+        // Display user email
+        const user = App.getCurrentUser();
+        document.getElementById('userEmail').textContent = user.email;
+
+        // Logout handler
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await App.apiRequest('/auth/logout.php', { method: 'POST' });
+            App.clearUserSession();
+            window.location.href = '/pages/login.html';
+        });
+
+        // Notification button handler
+        const notificationBtn = document.getElementById('notificationBtn');
+
+        async function checkNotificationStatus() {
+            if (window.PushNotifications.isSupported()) {
+                const subscription = await window.PushNotifications.getCurrentSubscription();
+                if (subscription) {
+                    notificationBtn.textContent = 'Alerts Enabled ✓';
+                    notificationBtn.classList.add('bg-green-50', 'text-green-600');
+                    notificationBtn.classList.remove('bg-blue-50', 'text-blue-600');
+                } else {
+                    notificationBtn.classList.remove('hidden');
+                }
+            }
+        }
+
+        notificationBtn.addEventListener('click', async () => {
+            try {
+                await window.PushNotifications.subscribe();
+                App.showToast('Push notifications enabled!', 'success');
+                await checkNotificationStatus();
+            } catch (error) {
+                App.showToast('Failed to enable notifications', 'error');
+            }
+        });
+
+        checkNotificationStatus();
+
+        // Load products
+        async function loadProducts() {
+            try {
+                const response = await App.apiRequest('/products/read.php');
+
+                if (response.data.success) {
+                    const products = response.data.products;
+                    displayProducts(products);
+                    updateStats(products);
+                } else {
+                    throw new Error(response.data.message);
+                }
+            } catch (error) {
+                document.getElementById('productsContainer').innerHTML = `
+                    <div class="text-center py-12">
+                        <p class="text-red-600">Failed to load products</p>
+                        <button onclick="loadProducts()" class="mt-4 text-blue-600 hover:underline">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        function displayProducts(products) {
+            const container = document.getElementById('productsContainer');
+
+            if (products.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                        </svg>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">No products tracked yet</h3>
+                        <p class="text-gray-600 mb-6">Start tracking products to monitor price changes</p>
+                        <a href="/pages/add_product.html" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
+                            Add Your First Product
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            const grid = products.map(product => {
+                const currentPrice = product.latest_price || product.current_price;
+                const targetPrice = parseFloat(product.target_price);
+                const isGoodPrice = currentPrice && currentPrice <= targetPrice;
+
+                return `
+                    <div class="product-card bg-white rounded-2xl p-6 shadow-sm cursor-pointer" onclick="window.location.href='/pages/product_details.html?id=${product.id}'">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-gray-900 mb-1">${product.name}</h3>
+                                <p class="text-sm text-gray-600">${product.store}</p>
+                            </div>
+                            ${isGoodPrice ? '<span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full font-semibold">Target Met!</span>' : ''}
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <p class="text-xs text-gray-600 mb-1">Current Price</p>
+                                <p class="text-2xl font-bold ${isGoodPrice ? 'text-green-600' : 'text-gray-900'}">
+                                    ${currentPrice ? App.formatCurrency(currentPrice) : 'N/A'}
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-600 mb-1">Target Price</p>
+                                <p class="text-2xl font-bold text-blue-600">
+                                    ${App.formatCurrency(targetPrice)}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-500">
+                                ${product.price_count} price checks
+                            </span>
+                            <span class="text-blue-600 font-semibold">View Details →</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${grid}</div>`;
+        }
+
+        function updateStats(products) {
+            document.getElementById('totalProducts').textContent = products.length;
+
+            const prices = products.map(p => parseFloat(p.latest_price || p.current_price || 0)).filter(p => p > 0);
+            const avgPrice = prices.length > 0 ? prices.reduce((a, b) => a + b, 0) / prices.length : 0;
+            document.getElementById('avgPrice').textContent = App.formatCurrency(avgPrice);
+
+            const lastCheckedTimes = products.map(p => p.last_checked).filter(t => t);
+            if (lastCheckedTimes.length > 0) {
+                const mostRecent = lastCheckedTimes.sort().reverse()[0];
+                document.getElementById('lastChecked').textContent = App.formatRelativeTime(mostRecent);
+            }
+        }
+
+        // Initialize
+        loadProducts();
+
+        // Initialize push notifications
+        window.PushNotifications.init();
+    </script>
+</body>
+</html>

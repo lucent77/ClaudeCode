@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2563EB">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+
+    <title>Product Details - Price Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="/pages/dashboard.html" class="text-gray-600 hover:text-gray-900">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                </a>
+                <h1 class="text-2xl font-bold text-gray-900">Product Details</h1>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button
+                    id="editBtn"
+                    class="text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 transition"
+                    title="Edit Product"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                </button>
+                <button
+                    id="deleteBtn"
+                    class="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition"
+                    title="Delete Product"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 py-8">
+        <div id="loadingContainer" class="text-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p class="text-gray-600 mt-4">Loading product...</p>
+        </div>
+
+        <div id="productContainer" class="hidden space-y-6">
+            <!-- Product Info Card -->
+            <div class="bg-white rounded-2xl shadow-sm p-8">
+                <div class="flex items-start justify-between mb-6">
+                    <div class="flex-1">
+                        <h2 id="productName" class="text-3xl font-bold text-gray-900 mb-2"></h2>
+                        <div class="flex items-center gap-3 text-gray-600">
+                            <span id="productStore" class="font-medium"></span>
+                            <span>•</span>
+                            <a id="productUrl" href="#" target="_blank" class="text-blue-600 hover:underline flex items-center gap-1">
+                                View on Store
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-blue-50 rounded-xl p-4">
+                        <p class="text-sm text-blue-600 font-medium mb-1">Current Price</p>
+                        <p id="currentPrice" class="text-3xl font-bold text-blue-700">-</p>
+                    </div>
+
+                    <div class="bg-green-50 rounded-xl p-4">
+                        <p class="text-sm text-green-600 font-medium mb-1">Target Price</p>
+                        <p id="targetPrice" class="text-3xl font-bold text-green-700">-</p>
+                    </div>
+
+                    <div class="bg-purple-50 rounded-xl p-4">
+                        <p class="text-sm text-purple-600 font-medium mb-1">Lowest Price</p>
+                        <p id="lowestPrice" class="text-3xl font-bold text-purple-700">-</p>
+                    </div>
+
+                    <div class="bg-orange-50 rounded-xl p-4">
+                        <p class="text-sm text-orange-600 font-medium mb-1">Highest Price</p>
+                        <p id="highestPrice" class="text-3xl font-bold text-orange-700">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price History Chart -->
+            <div class="bg-white rounded-2xl shadow-sm p-8">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">Price History</h3>
+                <div class="relative" style="height: 300px;">
+                    <canvas id="priceChart"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4 text-center">
+                    Showing last 30 price checks • Updates automatically every few hours
+                </p>
+            </div>
+
+            <!-- Statistics -->
+            <div class="bg-white rounded-2xl shadow-sm p-8">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">Statistics</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Average Price</p>
+                        <p id="avgPrice" class="text-2xl font-bold text-gray-900">-</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Price Checks</p>
+                        <p id="priceChecks" class="text-2xl font-bold text-gray-900">-</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Last Checked</p>
+                        <p id="lastChecked" class="text-sm font-bold text-gray-900">-</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Status</p>
+                        <p id="priceStatus" class="text-sm font-bold">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6">Edit Target Price</h3>
+            <form id="editForm">
+                <div class="mb-6">
+                    <label for="newTargetPrice" class="block text-sm font-semibold text-gray-700 mb-2">
+                        New Target Price (USD)
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3 text-gray-500 text-lg">$</span>
+                        <input
+                            type="number"
+                            id="newTargetPrice"
+                            required
+                            min="0.01"
+                            step="0.01"
+                            class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700">
+                        Save Changes
+                    </button>
+                    <button type="button" id="cancelEdit" class="px-6 py-3 rounded-xl font-semibold text-gray-700 hover:bg-gray-100">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/assets/js/app.js"></script>
+    <script>
+        // Require authentication
+        App.requireAuth();
+
+        // Get product ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        if (!productId) {
+            window.location.href = '/pages/dashboard.html';
+        }
+
+        let currentProduct = null;
+        let priceChart = null;
+
+        // Load product details
+        async function loadProduct() {
+            try {
+                const response = await App.apiRequest(`/products/read.php?id=${productId}`);
+
+                if (response.data.success) {
+                    currentProduct = response.data.product;
+                    displayProduct(currentProduct);
+                    await loadPriceHistory();
+                } else {
+                    throw new Error(response.data.message);
+                }
+            } catch (error) {
+                App.showToast('Failed to load product', 'error');
+                setTimeout(() => window.location.href = '/pages/dashboard.html', 2000);
+            }
+        }
+
+        function displayProduct(product) {
+            document.getElementById('productName').textContent = product.name;
+            document.getElementById('productStore').textContent = product.store;
+            document.getElementById('productUrl').href = product.url;
+
+            const currentPrice = product.current_price;
+            const targetPrice = parseFloat(product.target_price);
+            const lowestPrice = product.lowest_price;
+            const highestPrice = product.highest_price;
+
+            document.getElementById('currentPrice').textContent = currentPrice ? App.formatCurrency(currentPrice) : 'N/A';
+            document.getElementById('targetPrice').textContent = App.formatCurrency(targetPrice);
+            document.getElementById('lowestPrice').textContent = lowestPrice ? App.formatCurrency(lowestPrice) : 'N/A';
+            document.getElementById('highestPrice').textContent = highestPrice ? App.formatCurrency(highestPrice) : 'N/A';
+
+            document.getElementById('priceChecks').textContent = product.price_count || 0;
+            document.getElementById('lastChecked').textContent = product.last_checked ? App.formatRelativeTime(product.last_checked) : 'Never';
+
+            // Status
+            const statusEl = document.getElementById('priceStatus');
+            if (currentPrice && currentPrice <= targetPrice) {
+                statusEl.textContent = '✓ Target Met';
+                statusEl.className = 'text-sm font-bold text-green-600';
+            } else {
+                statusEl.textContent = 'Tracking';
+                statusEl.className = 'text-sm font-bold text-blue-600';
+            }
+
+            // Show product container
+            document.getElementById('loadingContainer').classList.add('hidden');
+            document.getElementById('productContainer').classList.remove('hidden');
+        }
+
+        // Load price history and create chart
+        async function loadPriceHistory() {
+            try {
+                const response = await App.apiRequest(`/price_history.php?product_id=${productId}&limit=30`);
+
+                if (response.data.success) {
+                    const history = response.data.history;
+                    const stats = response.data.stats;
+
+                    // Update statistics
+                    document.getElementById('avgPrice').textContent = stats.average ? App.formatCurrency(stats.average) : 'N/A';
+
+                    // Create chart
+                    createPriceChart(history, currentProduct.target_price);
+                }
+            } catch (error) {
+                console.error('Failed to load price history:', error);
+            }
+        }
+
+        function createPriceChart(history, targetPrice) {
+            const ctx = document.getElementById('priceChart').getContext('2d');
+
+            const labels = history.map(h => new Date(h.checked_at).toLocaleDateString());
+            const prices = history.map(h => parseFloat(h.price));
+
+            // Destroy existing chart if any
+            if (priceChart) {
+                priceChart.destroy();
+            }
+
+            priceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Price',
+                            data: prices,
+                            borderColor: '#2563EB',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Target Price',
+                            data: new Array(prices.length).fill(parseFloat(targetPrice)),
+                            borderColor: '#10B981',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += App.formatCurrency(context.parsed.y);
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Edit button
+        document.getElementById('editBtn').addEventListener('click', () => {
+            document.getElementById('newTargetPrice').value = currentProduct.target_price;
+            document.getElementById('editModal').classList.remove('hidden');
+        });
+
+        document.getElementById('cancelEdit').addEventListener('click', () => {
+            document.getElementById('editModal').classList.add('hidden');
+        });
+
+        // Edit form submission
+        document.getElementById('editForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const newTargetPrice = parseFloat(document.getElementById('newTargetPrice').value);
+
+            try {
+                const response = await App.apiRequest('/products/update.php', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id: productId,
+                        name: currentProduct.name,
+                        store: currentProduct.store,
+                        url: currentProduct.url,
+                        target_price: newTargetPrice
+                    })
+                });
+
+                if (response.data.success) {
+                    App.showToast('Target price updated!', 'success');
+                    document.getElementById('editModal').classList.add('hidden');
+                    await loadProduct();
+                } else {
+                    App.showToast('Failed to update product', 'error');
+                }
+            } catch (error) {
+                App.showToast('An error occurred', 'error');
+            }
+        });
+
+        // Delete button
+        document.getElementById('deleteBtn').addEventListener('click', async () => {
+            if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const response = await App.apiRequest('/products/delete.php', {
+                    method: 'POST',
+                    body: JSON.stringify({ id: productId })
+                });
+
+                if (response.data.success) {
+                    App.showToast('Product deleted', 'success');
+                    setTimeout(() => window.location.href = '/pages/dashboard.html', 1000);
+                } else {
+                    App.showToast('Failed to delete product', 'error');
+                }
+            } catch (error) {
+                App.showToast('An error occurred', 'error');
+            }
+        });
+
+        // Initialize
+        loadProduct();
+    </script>
+</body>
+</html>

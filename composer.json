@@ -1,0 +1,24 @@
+{
+    "name": "price-tracker/pwa",
+    "description": "Multi-User Price Tracker PWA with Push Notifications",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "minishlink/web-push": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PriceTracker\\": "api/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@php -r \"echo 'Dependencies installed successfully!\\n';\""
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    }
+}

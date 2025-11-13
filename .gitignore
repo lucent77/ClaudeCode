@@ -1,0 +1,44 @@
+# Dependencies
+/vendor/
+composer.lock
+
+# Logs
+/logs/*.log
+/logs/*.txt
+
+# Configuration (sensitive)
+api/config.php
+
+# Environment
+.env
+.env.local
+
+# Database backups
+*.sql
+*.sql.gz
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~
+
+# Cache
+cache/
+*.cache
