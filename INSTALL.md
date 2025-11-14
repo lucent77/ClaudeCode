@@ -17,10 +17,28 @@ Before you begin, make sure you have:
 
 ### 1. Upload Files (5 minutes)
 
+**IMPORTANT FOR HOSTINGER USERS**:
+- Upload ALL files directly to `public_html/` directory
+- The `index.php` file MUST be in the root (`public_html/index.php`)
+- This structure is optimized for Hostinger's default PHP configuration
+
+**File Structure After Upload:**
+```
+public_html/
+├── index.php          ← Must be here!
+├── case.php
+├── .htaccess
+├── api/
+├── config/
+├── database/
+├── includes/
+└── uploads/
+```
+
 **Option A: Via FTP (Hostinger/cPanel)**
 1. Connect to your hosting via FTP (FileZilla recommended)
-2. Upload all files to your web directory (usually `public_html/`)
-3. Make sure the folder structure is intact
+2. Upload all files to `public_html/` directory
+3. Verify that `index.php` is in the root of `public_html/`
 
 **Option B: Via SSH/Git**
 ```bash

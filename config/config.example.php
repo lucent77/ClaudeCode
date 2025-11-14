@@ -33,7 +33,7 @@ define('APP_DEBUG', false);                                // Set to true for de
 // ============================================
 // File Upload Settings
 // ============================================
-define('UPLOAD_DIR', __DIR__ . '/../public/uploads/');     // Local file storage directory
+define('UPLOAD_DIR', __DIR__ . '/../uploads/');            // Local file storage directory
 define('MAX_UPLOAD_SIZE', 100 * 1024 * 1024);              // 100MB max file size
 define('ALLOWED_EXTENSIONS', 'jpg,jpeg,png,gif,pdf,stl,dcm,zip,rar,obj,ply,3ds');
 

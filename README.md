@@ -28,7 +28,10 @@ A modern, file-first AoX case management dashboard based on Slack Unified Files 
 
 ```
 creodent-aox-dashboard/
-├── api/                    # REST API endpoints
+├── index.php              # Dashboard home (case list) - ROOT FILE
+├── case.php               # Case detail page
+├── .htaccess              # Apache configuration
+├── api/                   # REST API endpoints
 │   ├── cases.php          # Case management API
 │   ├── sync.php           # Slack synchronization API
 │   └── stats.php          # Statistics API
@@ -42,11 +45,11 @@ creodent-aox-dashboard/
 │   ├── SlackClient.php    # Slack API integration
 │   ├── CaseModel.php      # Case management model
 │   └── FileClassifier.php # File classification logic
-└── public/                # Public web root
-    ├── index.php          # Dashboard home (case list)
-    ├── case.php           # Case detail page
-    └── uploads/           # Local file storage (optional)
+├── uploads/               # Local file storage (optional)
+└── assets/                # Static assets (CSS, JS, images)
 ```
+
+**Note for Hostinger Users**: The `index.php` file is in the root directory as required by Hostinger's default configuration.
 
 ## 🔧 Installation
 
@@ -113,29 +116,43 @@ define('SLACK_WORKSPACE_ID', 'YOUR_WORKSPACE_ID');
 6. Copy the **Bot User OAuth Token** (starts with `xoxb-`)
 7. Paste the token into `config/config.php`
 
-### Step 5: Configure Web Server
+### Step 5: Deploy to Hostinger
 
-#### For Hostinger (cPanel)
+#### For Hostinger (cPanel) - Recommended
 
-1. Upload all files to your hosting account
-2. Set document root to `/public` directory
-3. Create `.htaccess` in public folder:
+1. **Upload Files**:
+   - Connect to your hosting via FTP (FileZilla) or File Manager
+   - Upload ALL files to `public_html/` directory
+   - The `index.php` should be directly in `public_html/`
 
-```apache
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^api/(.*)$ /api/$1 [L]
-```
+2. **File Structure in Hostinger**:
+   ```
+   public_html/
+   ├── index.php          ← Must be here!
+   ├── case.php
+   ├── .htaccess
+   ├── api/
+   ├── config/
+   ├── database/
+   ├── includes/
+   └── uploads/
+   ```
+
+3. **Set Permissions**:
+   - Via File Manager: Right-click → Permissions
+   - Set `uploads/` to 755
+   - Set `config/config.php` to 644
+
+4. **No additional configuration needed** - `.htaccess` is already included!
 
 #### For Apache (Local/VPS)
 
 ```apache
 <VirtualHost *:80>
     ServerName creodent-aox.local
-    DocumentRoot /path/to/creodent-aox-dashboard/public
+    DocumentRoot /path/to/creodent-aox-dashboard
 
-    <Directory /path/to/creodent-aox-dashboard/public>
+    <Directory /path/to/creodent-aox-dashboard>
         Options Indexes FollowSymLinks
         AllowOverride All
         Require all granted
@@ -149,7 +166,7 @@ RewriteRule ^api/(.*)$ /api/$1 [L]
 server {
     listen 80;
     server_name creodent-aox.local;
-    root /path/to/creodent-aox-dashboard/public;
+    root /path/to/creodent-aox-dashboard;
 
     index index.php index.html;
 
