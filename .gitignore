@@ -1,9 +1,11 @@
 /node_modules
-/public/hot
-/public/storage
-/public/uploads
-/storage/*.key
 /vendor
+/storage/*.key
+/storage/logs/*
+!/storage/logs/.gitkeep
+/bootstrap/cache/*
+!/bootstrap/cache/.gitkeep
+/uploads/*
 .env
 .env.backup
 .phpunit.result.cache
