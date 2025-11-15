@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/../config/config.php';
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/slack_service.php';
+require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/slack_service.php';
 
 requireAdmin();
 

@@ -35,9 +35,17 @@ A modern web application for managing Slack List tasks on Hostinger PHP hosting 
 2. Ensure the following structure:
    ```
    public_html/
+   ├── index.php
+   ├── login.php
+   ├── logout.php
+   ├── task_detail.php
+   ├── sync.php
+   ├── users.php
+   ├── .htaccess
    ├── config/
+   │   └── .htaccess (access denied)
    ├── includes/
-   ├── public/
+   │   └── .htaccess (access denied)
    ├── api/
    ├── uploads/
    ├── database.sql
@@ -157,26 +165,28 @@ Ensure the `uploads` directory is writable:
 ## File Structure
 
 ```
-slack-hostinger-integration/
+slack-hostinger-integration/ (upload to public_html)
+├── index.php                   # Main dashboard (root)
+├── login.php                   # Login page (root)
+├── logout.php                  # Logout handler (root)
+├── task_detail.php             # Task details page (root)
+├── sync.php                    # Data sync page (root)
+├── users.php                   # User management (root)
+├── .htaccess                   # Apache configuration
 ├── config/
-│   └── config.php              # Main configuration file
+│   ├── config.php              # Main configuration file
+│   └── .htaccess               # Deny web access
 ├── includes/
 │   ├── auth.php                # Authentication handler
-│   └── slack_service.php       # Slack API integration
-├── public/
-│   ├── index.php               # Main dashboard
-│   ├── login.php               # Login page
-│   ├── logout.php              # Logout handler
-│   ├── task_detail.php         # Task details page
-│   ├── sync.php                # Data sync page
-│   ├── users.php               # User management (admin)
-│   └── .htaccess               # Apache configuration
+│   ├── slack_service.php       # Slack API integration
+│   └── .htaccess               # Deny web access
 ├── api/
 │   ├── tasks.php               # Tasks API endpoint
 │   └── users.php               # Users API endpoint
 ├── uploads/                    # File upload directory
 ├── database.sql                # Database schema
-└── README.md                   # This file
+├── README.md                   # Documentation
+└── INSTALLATION_GUIDE.md       # Installation instructions
 ```
 
 ## Troubleshooting

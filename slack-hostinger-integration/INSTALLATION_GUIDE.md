@@ -39,10 +39,18 @@ git clone <repository-url>
 **Final structure should look like:**
 ```
 public_html/
+├── index.php               # Main files in root
+├── login.php
+├── logout.php
+├── task_detail.php
+├── sync.php
+├── users.php
+├── .htaccess
 ├── api/
 ├── config/
+│   └── .htaccess          # Protected from web access
 ├── includes/
-├── public/
+│   └── .htaccess          # Protected from web access
 ├── uploads/
 ├── database.sql
 └── README.md
