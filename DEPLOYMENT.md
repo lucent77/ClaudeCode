@@ -44,14 +44,19 @@ This guide provides step-by-step instructions for deploying the Creodent AoX Das
 4. Ensure the following structure:
    ```
    public_html/
-   ├── app/
-   ├── config/
-   ├── database/
-   ├── public/
-   ├── resources/
-   ├── routes/
-   ├── storage/
-   └── .htaccess
+   ├── index.php          # Main entry point
+   ├── api.php            # API entry point
+   ├── login.php          # Login page
+   ├── dashboard.php      # Dashboard page
+   ├── case-detail.php    # Case detail page
+   ├── .htaccess          # Apache configuration
+   ├── app/               # Application logic
+   ├── config/            # Configuration files
+   ├── database/          # Database setup
+   ├── routes/            # API routes
+   ├── storage/           # File storage and logs
+   ├── js/                # JavaScript files
+   └── css/               # Stylesheets
    ```
 
 #### Option B: Using FTP/SFTP

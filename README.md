@@ -155,11 +155,11 @@ ClaudeCode/
 │   ├── migrations/           # Database Migrations
 │   ├── seeds/                # Database Seeds
 │   └── setup.sql            # Initial Database Setup
-├── public/                   # Public Web Root
-│   ├── css/                  # Stylesheets
-│   ├── js/                   # JavaScript Files
-│   ├── api.php              # API Entry Point
-│   └── index.php            # Web Entry Point
+├── # Root directory files (upload to public_html)
+
+
+
+
 ├── resources/
 │   └── views/               # Frontend Views
 │       ├── login.php

@@ -17,8 +17,8 @@ use App\Http\Controllers\SyncController;
 $method = $_SERVER['REQUEST_METHOD'];
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// Remove /api prefix
-$path = preg_replace('#^/api#', '', $path);
+// Remove /api.php prefix
+$path = preg_replace('#^/api\.php#', '', $path);
 
 // Authentication routes (public)
 if ($path === '/auth/login' && $method === 'POST') {
