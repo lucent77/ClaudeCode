@@ -1,0 +1,14 @@
+# 관리자 페이지 보안 설정
+# 사용하려면 주석을 해제하고 .htpasswd 파일 경로를 수정하세요
+
+# AuthType Basic
+# AuthName "관리자 전용 영역"
+# AuthUserFile /home/username/.htpasswd
+# Require valid-user
+
+# CORS 헤더 (필요시)
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
