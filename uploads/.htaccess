@@ -1,0 +1,27 @@
+# Security configuration for uploads directory
+
+# Prevent directory listing
+Options -Indexes
+
+# Only allow STL file downloads
+<FilesMatch "\.(stl|STL)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+# Prevent PHP execution
+<FilesMatch "\.php$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Prevent access to other file types
+<FilesMatch "\.(?!(stl|STL)$)[^.]+$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Force download for STL files
+<FilesMatch "\.(stl|STL)$">
+    Header set Content-Disposition "attachment"
+</FilesMatch>

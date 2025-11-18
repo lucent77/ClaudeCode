@@ -1,0 +1,98 @@
+System,Size,SKU,ARGEN [3Shape],ARGEN [exocad],ASTRA [3Shape],ASTRA [exocad],ASTRA IO [3Shape],ASTRA IO [exocad]
+AstraTech (OsseoSpeed TX),3.0 mm,AS30,,,O-LAB,O-LAB,C-01,C-01
+AstraTech (OsseoSpeed TX),3.5/4.0 mm,AS40,O,O,,,O  C-02,O  C-02
+AstraTech (OsseoSpeed TX),4.5/5.0 mm,AS50,O,O,,,O  C-03,O  C-03
+ANKYLOS,Pilar Regular ,DPA,,,,,O  L-01,O  L-01
+AstraTech (EV),3.0 mm,EV30,,,,,O  P-01,O  P-01
+AstraTech (EV),3.6 mm,EV36,,,,,O  P-02,O  P-02
+AstraTech (EV),4.2 mm,EV42,,,,,O  P-03,O  P-03
+AstraTech (EV),4.8 mm,EV48,,,,,O  P-04,O  P-04
+AstraTech (EV),5.4 mm,EV54,,,,,O  P-05,O  P-05
+Biomet 3i (Certain),3.4 mm,3i34,O,O,,,F-01,F-01
+Biomet 3i (Certain),4.1 mm,3i40,O,O,,,O  F-02,O  F-02
+Biomet 3i (Certain),5.0 mm,3i50,O,O,,,O  F-02,O  F-02
+Biomet 3i (Certain),6.0 mm,3i60,,,,,O  F-02,O  F-02
+Biomet 3i (External),NP (3.5 mm),3IEM,,,,,,
+Biomet 3i (External),WP (5.0 mm),3IEW,,,,,,
+Biohorizons (Internal),3.0 mm,BI30,,,,,,
+Biohorizons (Internal),3.5 mm,BI35,O,O,O-LAB,O-LAB,B-01,B-01
+Biohorizons (Internal),4.5 mm,BI45,O,O,,,B-02,B-02
+Biohorizons (Internal),5.7 mm,BI57,O,O,O-LAB,O-LAB,B-03,B-03
+Biohorizons (External),3.5 mm,BE35,,,,,A-03,A-03
+Biohorizons (External),4.0 mm,BE40,,,,,A-06,A-06
+Biohorizons (External),5.0 mm,BE50,,,,,A-09,A-09
+Biohorizons (External),6.0 mm,BE60,,,,,,
+Camlog (Camlog),3.3 mm,CL33,,,,,N-01,N-01
+Camlog (Camlog),3.8 mm,CL38,,,,,N-02,N-02
+Camlog (Camlog),4.3 mm,CL43,,,,,N-03,N-03
+Camlog (Camlog),5.0 mm,CL50,,,,,N-04,N-04
+Camlog (Conelog),3.3 mm,CON33,,,,,Q-01,Q-01
+Camlog (Conelog),3.8 mm,CON38,,,,,Q-02,Q-02
+Camlog (Conelog),4.3 mm,CON43,,,,,Q-02,Q-02
+Camlog (Conelog),5.0 mm,CON50,,,,,Q-03,Q-03
+"Dentium  (SuperLine)
+(compatible with MGAO)",Regular ,DTR,,,,,,
+ImplantDirect (Legacy),3.0 mm,ID30,,,,,,
+Keystone (PrimaConnex),3.5 mm,KP35,,,O-LAB,O-LAB,M-01,M-01
+Keystone (PrimaConnex),4.1 mm,KP41,,,O-LAB,O-LAB,M-02,M-02
+Keystone (PrimaConnex),5.0 mm,KP50,,,O-LAB,O-LAB,M-03,M-03
+MIS (SEVEN),3.3 mm (NARROW),MIS33,,,,,B-04,B-04
+MIS (C1),NARROW (3.3 mm),C1NP,,,,,,
+MIS (C1),STANDARD (3.75 mm),C1RP,,,O,O,,
+MIS (C1),WIDE (5.0 mm),C1WP,,,,,,
+Megagen (EZ Plus),Regular (4.0-4.5 mm),MGR,,,,,,
+Megagen (Anyridge),Regular,MGAR,,,,,,
+Megagen (AnyOne), 3.5-7.0 mm,MGAO,,,,,,
+"Nobel Biocare (Replace)
+Implant Direct (TRI-LOBE)",NP (3.5 mm),NB35,O,O,,,D-01,D-01
+"Nobel Biocare (Replace)
+Implant Direct (TRI-LOBE)",RP (4.3 mm),NB43,O,O,O-LAB,O-LAB,D-02,D-02
+"Nobel Biocare (Replace)
+Implant Direct (TRI-LOBE)",WP (5.0 mm),NB50,O,O,O-LAB,O-LAB,D-03,D-03
+"Nobel Biocare (Replace)
+Implant Direct (TRI-LOBE)",6.0 mm,NB60,,,O-LAB,O-LAB,D-04,D-04
+Nobel BioCare (Active),3.0 mm,ACT30,,,O-LAB,O-LAB,K-03,K-03
+"Nobel BioCare (Active)
+Implant Direct (InterActive)",NP (3.5 mm),ACT35,O,O,,,K-01,K-01
+"Nobel BioCare (Active)
+Implant Direct (InterActive)",RP (4.3 mm),ACT43,O,O,O-LAB,O-LAB,O  K-02,O  K-02
+Nobel BioCare (Active),WP (5.5 mm),ACT55,,,,,K-04,K-04
+Nobel Biocare (Branemark),NP (3.5mm),B35,,,,,A-04,A-04
+Nobel Biocare (Branemark),RP (4.1 mm) & 3I External,B41,,,,,A-06,A-06
+Nobel Biocare (Branemark),WP (5.0 mm),B50,,,,,A-11,A-11
+NeoDent (CM),(Universal),NEO,,,,,,
+NeoDent (GM),,NEOG,,,,,,
+Nobel Biocare (Multi Unit),ALL,NBM,,,,,,
+NEOSS (ProActive), 3.5-5.5 mm,NEOSS,,,,,,
+"Osstem (GS)
+Hiossen (SA)",Mini ,OTM,,,,,R-01,R-01
+"Osstem (GS)
+Hiossen (SA)",Regular,OTR,O,O,O-LAB,O-LAB,R-02,R-02
+Straumann (Bone Level) [ ITI ],NC (3.3 mm),ST33,O,O,O-LAB,O-LAB,O  H-01,O  H-01
+Straumann (Bone Level) [ ITI ],RC (4.1 mm),ST48,O,O,,,O  H-02,O  H-02
+"Straumann (Tissue Level) [ ITI ]
+(Synocta) Implant Direct (Swish)",RN (4.8mm),SS48,,,O-LAB,O-LAB,E-01,E-01
+"Straumann (Tissue Level) [ ITI ]
+(Synocta) Implant Direct (Swish)",WN (6.5mm),SS65,,,O-LAB,O-LAB,E-02,E-02
+"SWEDEN & MARTINA
+(Premium Kohno, Shelta)",3.3 mm,SM33,,,,,,
+"SWEDEN & MARTINA
+(Premium Kohno, Shelta)",3.8 mm,SM38,,,,,,
+"SWEDEN & MARTINA
+(Premium Kohno, Shelta)",4.2 mm,SM42,,,,,,
+"SWEDEN & MARTINA
+(Premium Kohno, Shelta)",5 mm,SM50,,,,,,
+Thommen (SPI),3.5 mm,TM35,,,,,,
+Thommen (SPI),4.0 mm,TM40,,,,,,
+Thommen (SPI),4.5 mm,TM45,,,,,,
+Thommen (SPI),5.0 mm,TM50,,,,,,
+Thommen (SPI),6.0 mm,TM60,,,,,,
+"Zimmer (Screw-Vent)
+MIS (SEVEN)
+ImplantDirect (Legacy)",3.5 mm,Z37,O,O,O-LAB,O-LAB,O  B-01,O  B-01
+"Zimmer (Screw-Vent)
+MIS (SEVEN)
+ImplantDirect (Legacy)",4.7 mm,Z47,O,O,O-LAB,O-LAB,O  B-02,O  B-02
+"Zimmer (Screw-Vent)
+MIS (SEVEN)
+ImplantDirect (Legacy)",5.7 mm,Z57,O,O,O-LAB,O-LAB,B-03,B-03

@@ -1,0 +1,43 @@
+# Uploaded STL files
+uploads/*.stl
+uploads/*.STL
+
+# Ignore all files in uploads except .htaccess
+uploads/*
+!uploads/.htaccess
+
+# Configuration (contains sensitive database credentials)
+# Uncomment if you don't want to commit config
+# config.php
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# System files
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+error_log
+access_log
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Cache
+cache/
+*.cache
