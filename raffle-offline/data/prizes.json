@@ -1,0 +1,65 @@
+{
+  "prizes": [
+    {
+      "id": 1,
+      "name": "1st Prize - iPhone 15 Pro",
+      "probability": 1.00,
+      "color": "#EF4444",
+      "stock": 2,
+      "is_active": 1,
+      "is_special": 0,
+      "created_at": "2025-01-01 00:00:00"
+    },
+    {
+      "id": 2,
+      "name": "2nd Prize - iPad Air",
+      "probability": 2.00,
+      "color": "#F59E0B",
+      "stock": 5,
+      "is_active": 1,
+      "is_special": 0,
+      "created_at": "2025-01-01 00:00:00"
+    },
+    {
+      "id": 3,
+      "name": "3rd Prize - AirPods Pro",
+      "probability": 5.00,
+      "color": "#10B981",
+      "stock": 10,
+      "is_active": 1,
+      "is_special": 0,
+      "created_at": "2025-01-01 00:00:00"
+    },
+    {
+      "id": 4,
+      "name": "4th Prize - Gift Card $50",
+      "probability": 15.00,
+      "color": "#3B82F6",
+      "stock": 30,
+      "is_active": 1,
+      "is_special": 0,
+      "created_at": "2025-01-01 00:00:00"
+    },
+    {
+      "id": 5,
+      "name": "5th Prize - Keychain",
+      "probability": 41.00,
+      "color": "#8B5CF6",
+      "stock": 100,
+      "is_active": 1,
+      "is_special": 0,
+      "created_at": "2025-01-01 00:00:00"
+    },
+    {
+      "id": 6,
+      "name": "No Prize",
+      "probability": 36.00,
+      "color": "#6B7280",
+      "stock": -1,
+      "is_active": 1,
+      "is_special": 0,
+      "created_at": "2025-01-01 00:00:00"
+    }
+  ],
+  "last_id": 6
+}

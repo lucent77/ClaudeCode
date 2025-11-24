@@ -1,0 +1,32 @@
+# Offline Prize Drawing System - Apache Configuration
+
+# Enable PHP execution
+<IfModule mod_php7.c>
+    php_flag display_errors On
+    php_value error_reporting E_ALL
+</IfModule>
+
+# Directory index
+DirectoryIndex index.php index.html
+
+# Protect data directory (optional - may interfere with file operations)
+# <Directory "data">
+#     Require all denied
+# </Directory>
+
+# Enable CORS for local development (optional)
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type"
+</IfModule>
+
+# Prevent directory listing
+Options -Indexes
+
+# Enable URL rewriting (if needed)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+</IfModule>
