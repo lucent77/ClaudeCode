@@ -1,0 +1,56 @@
+# Magic Rx Scanner - Git Ignore File
+
+# Credentials (CRITICAL - Never commit!)
+credentials/*.json
+credentials/google-service-account.json
+
+# Configuration files with sensitive data
+includes/config.php
+
+# Uploaded files
+uploads/documents/*
+uploads/templates/*
+uploads/processed/*
+!uploads/documents/.gitkeep
+!uploads/templates/.gitkeep
+!uploads/processed/.gitkeep
+
+# Logs
+logs/*.log
+logs/*
+!logs/.gitkeep
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Database backups
+*.sql.gz
+*.sql
+!database/schema.sql
+
+# Vendor directories (if using Composer)
+vendor/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Cache files
+cache/*
+!cache/.gitkeep

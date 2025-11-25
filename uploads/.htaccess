@@ -1,0 +1,11 @@
+# Deny direct access to uploaded files for security
+# Files should only be accessed through PHP scripts
+
+Order Deny,Allow
+Deny from all
+
+# Allow access to image files only through authorized scripts
+<FilesMatch "\.(jpg|jpeg|png|gif)$">
+    # You can customize this to allow specific access patterns
+    # For now, denying all direct access
+</FilesMatch>
