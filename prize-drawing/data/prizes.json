@@ -1,0 +1,100 @@
+{
+  "settings": {
+    "totalSpins": 0,
+    "milestoneEnabled": true
+  },
+  "prizes": [
+    {
+      "id": 1,
+      "name": "Grand Prize - Laptop",
+      "probability": 1,
+      "stock": 1,
+      "color": "#FF6B6B",
+      "icon": "💻",
+      "isSpecial": false
+    },
+    {
+      "id": 2,
+      "name": "Wireless Earbuds",
+      "probability": 5,
+      "stock": 5,
+      "color": "#4ECDC4",
+      "icon": "🎧",
+      "isSpecial": false
+    },
+    {
+      "id": 3,
+      "name": "Power Bank",
+      "probability": 10,
+      "stock": 10,
+      "color": "#45B7D1",
+      "icon": "🔋",
+      "isSpecial": false
+    },
+    {
+      "id": 4,
+      "name": "USB Flash Drive",
+      "probability": 15,
+      "stock": 20,
+      "color": "#96CEB4",
+      "icon": "💾",
+      "isSpecial": false
+    },
+    {
+      "id": 5,
+      "name": "Branded T-Shirt",
+      "probability": 20,
+      "stock": 30,
+      "color": "#FFEAA7",
+      "icon": "👕",
+      "isSpecial": false
+    },
+    {
+      "id": 6,
+      "name": "Sticker Pack",
+      "probability": 25,
+      "stock": 50,
+      "color": "#DDA0DD",
+      "icon": "🎨",
+      "isSpecial": false
+    },
+    {
+      "id": 7,
+      "name": "Try Again",
+      "probability": 24,
+      "stock": 9999,
+      "color": "#95A5A6",
+      "icon": "🔄",
+      "isSpecial": false
+    }
+  ],
+  "milestones": [
+    {
+      "id": 101,
+      "name": "10th Spin Special - Smart Watch",
+      "spinNumber": 10,
+      "stock": 1,
+      "color": "#FFD700",
+      "icon": "⌚",
+      "awarded": false
+    },
+    {
+      "id": 102,
+      "name": "50th Spin Special - Tablet",
+      "spinNumber": 50,
+      "stock": 1,
+      "color": "#FF4500",
+      "icon": "📱",
+      "awarded": false
+    },
+    {
+      "id": 103,
+      "name": "100th Spin Special - Gaming Console",
+      "spinNumber": 100,
+      "stock": 1,
+      "color": "#9400D3",
+      "icon": "🎮",
+      "awarded": false
+    }
+  ]
+}
