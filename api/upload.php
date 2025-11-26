@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/database.php';
 require_once __DIR__ . '/../includes/file_handler.php';
+require_once __DIR__ . '/../includes/csrf_protection.php';
 
 /**
  * Send JSON response
@@ -48,6 +49,11 @@ function logProcessing($db, $prescriptionId, $level, $message) {
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     sendResponse(false, [], 'Only POST requests are allowed', 405);
+}
+
+// Validate CSRF token if enabled
+if (defined('ENABLE_CSRF_PROTECTION') && ENABLE_CSRF_PROTECTION) {
+    CSRFProtection::validateOrDie(true);
 }
 
 try {

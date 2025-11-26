@@ -3,6 +3,26 @@
  */
 
 let currentPrescriptionId = null;
+let csrfToken = null;
+let csrfTokenName = 'csrf_token';
+
+// Get CSRF token on page load (optional - only if CSRF protection is enabled)
+async function fetchCSRFToken() {
+    try {
+        const response = await fetch('api/get_token.php');
+        const data = await response.json();
+        if (data.success) {
+            csrfToken = data.token;
+            csrfTokenName = data.token_name;
+        }
+    } catch (error) {
+        // CSRF protection may not be enabled, continue without token
+        console.log('CSRF token not required or unavailable');
+    }
+}
+
+// Fetch CSRF token when page loads
+fetchCSRFToken();
 
 // Initialize drag and drop for document
 const documentDropZone = document.getElementById('documentDropZone');
@@ -150,6 +170,11 @@ uploadForm.addEventListener('submit', async (e) => {
         formData.append('template', templateInput.files[0]);
     }
 
+    // Add CSRF token if available
+    if (csrfToken) {
+        formData.append(csrfTokenName, csrfToken);
+    }
+
     try {
         // Show loading
         loadingSection.classList.remove('hidden');
@@ -170,14 +195,22 @@ uploadForm.addEventListener('submit', async (e) => {
         currentPrescriptionId = uploadData.data.prescription_id;
 
         // Start analysis
+        const analyzeBody = {
+            prescription_id: currentPrescriptionId
+        };
+
+        // Add CSRF token if available
+        if (csrfToken) {
+            analyzeBody[csrfTokenName] = csrfToken;
+        }
+
         const analyzeResponse = await fetch('api/analyze.php', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...(csrfToken && { 'X-CSRF-Token': csrfToken })
             },
-            body: JSON.stringify({
-                prescription_id: currentPrescriptionId
-            })
+            body: JSON.stringify(analyzeBody)
         });
 
         const analyzeData = await analyzeResponse.json();

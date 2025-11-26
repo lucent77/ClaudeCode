@@ -46,6 +46,7 @@ define('TIMEZONE', 'Asia/Seoul');  // ← UPDATE THIS to your timezone
 // Security Settings
 define('SESSION_LIFETIME', 3600); // 1 hour
 define('CSRF_TOKEN_NAME', 'csrf_token');
+define('ENABLE_CSRF_PROTECTION', false); // Set to true to enable CSRF protection (recommended for production)
 
 // Image Processing Settings
 define('IMAGE_MAX_WIDTH', 2000);
