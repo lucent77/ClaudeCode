@@ -2,6 +2,7 @@
 /**
  * Creodent Anonymous Voice - Front Controller
  *
+ * Main entry point for Hostinger hosting.
  * All requests are routed through this file.
  */
 
@@ -10,8 +11,8 @@ declare(strict_types=1);
 // Error reporting for development
 error_reporting(E_ALL);
 
-// Define base paths
-define('BASE_PATH', dirname(__DIR__));
+// Define base paths - root is the web root on Hostinger
+define('BASE_PATH', __DIR__);
 define('PUBLIC_PATH', __DIR__);
 
 // Load autoloader
@@ -22,7 +23,7 @@ $dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH);
 $dotenv->safeLoad();
 
 // Set error display based on environment
-if ($_ENV['APP_DEBUG'] ?? false) {
+if (($_ENV['APP_DEBUG'] ?? 'false') === 'true') {
     ini_set('display_errors', '1');
 } else {
     ini_set('display_errors', '0');

@@ -55,7 +55,14 @@ php app.php migrate
 php app.php seed
 ```
 
-6. Configure your web server to point to `/public` directory.
+6. Upload all files to your Hostinger public_html folder (or web root).
+
+### Hostinger Deployment
+
+1. Upload all project files to your Hostinger `public_html` directory
+2. The `index.php` and `.htaccess` are in the root for direct hosting
+3. Make sure `uploads/` folder has write permissions (755 or 775)
+4. Configure your database in Hostinger's hPanel and update `.env`
 
 ### Default Admin Credentials
 - Email: `admin@creodent.com`
@@ -169,22 +176,23 @@ SMTP_FROM=noreply@yourcompany.com
 ## Project Structure
 
 ```
-/public
-  index.php         # Front controller
-  /assets           # CSS/JS assets
-  /uploads          # User uploads
+/                     # Web root (Hostinger public_html)
+  index.php           # Front controller
+  .htaccess           # Apache rewrite rules
+  app.php             # CLI entry point
+/uploads              # User uploads
+/assets               # CSS/JS assets (optional)
 /src
-  /Controllers      # Request handlers
-  /Models           # Data models (future)
-  /Middleware       # Router, auth
-  /Services         # Business logic
-  /Views            # PHP templates
+  /Controllers        # Request handlers
+  /Middleware         # Router, auth
+  /Services           # Business logic
+  /Views              # PHP templates
 /config
-  database.php      # DB connection
-  routes.php        # Route definitions
+  database.php        # DB connection
+  routes.php          # Route definitions
 /database
-  /migrations       # SQL migrations
-/tests              # PHPUnit tests
+  /migrations         # SQL migrations
+/tests                # PHPUnit tests
 ```
 
 ## Security
