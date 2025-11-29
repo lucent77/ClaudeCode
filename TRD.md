@@ -16,7 +16,7 @@
 | **Language** | TypeScript | 5.x | 타입 안정성 |
 | **Styling** | Tailwind CSS | 4.x | CSS-first 설정 |
 | **UI Components** | shadcn/ui | latest | Tailwind 기반 컴포넌트 |
-| **Database** | PostgreSQL | 16.x | 관계형 DB |
+| **Database** | MySQL | 8.x | Hostinger VPS 기본 제공 |
 | **ORM** | Prisma | 6.x | 안정 버전 권장 |
 | **Authentication** | Auth.js (NextAuth v5) | 5.x | 역할 기반 인증 |
 | **Real-time** | Socket.io | 4.x | WebSocket 통신 |
@@ -46,7 +46,7 @@
 |-----------|-----------|-------------------|
 | 저수준 제어 | ✅ 높음 | ⚠️ 제한적 |
 | VPS 자체 호스팅 | ✅ 용이 | ❌ 복잡 |
-| 데이터베이스 독립 | ✅ PostgreSQL과 분리 | ❌ PostgreSQL 종속 |
+| 데이터베이스 독립 | ✅ MySQL과 분리 | ❌ PostgreSQL 종속 |
 | 80명 동시 접속 | ✅ 검증됨 | ✅ 가능 |
 
 **결론**: Hostinger VPS 환경에서 직접 운영하기에 Socket.io가 더 적합
@@ -74,8 +74,8 @@
 │  ┌──────────────────────────────────────────────────────────┐   │
 │  │                    Docker Compose                         │   │
 │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐   │   │
-│  │  │  Next.js    │  │  Socket.io  │  │   PostgreSQL    │   │   │
-│  │  │  (Port 3000)│  │  (Port 3001)│  │   (Port 5432)   │   │   │
+│  │  │  Next.js    │  │  Socket.io  │  │     MySQL       │   │   │
+│  │  │  (Port 3000)│  │  (Port 3001)│  │   (Port 3306)   │   │   │
 │  │  └──────┬──────┘  └──────┬──────┘  └────────┬────────┘   │   │
 │  │         │                │                   │            │   │
 │  │         └────────────────┼───────────────────┘            │   │
@@ -242,7 +242,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -299,8 +299,8 @@ model Case {
   labDoctorName   String
   patientName     String
   quantity        Int         @default(1)
-  toothNumbers    String[]    // 치아 번호 배열
-  toothColor      String?
+  toothNumbers    Json        // 치아 번호 배열 (MySQL은 배열 미지원, JSON 사용)
+  toothColor      String?     @db.VarChar(50)
   implantType     String?
   dueDate         DateTime
 
@@ -310,15 +310,15 @@ model Case {
   print3dType     String?
 
   // 노트 (다중 선택 + 자유 텍스트)
-  noteOptions     String[]    // 선택된 옵션들
-  noteText        String?     // 자유 텍스트
+  noteOptions     Json        // 선택된 옵션들 (MySQL JSON 타입)
+  noteText        String?     @db.Text  // 자유 텍스트
 
   // 상태 및 부서
   status          CaseStatus  @default(PENDING)
   currentDepartment Department @default(FRONT_DESK)
 
   // 워크플로우 (이 케이스가 거쳐야 할 부서들)
-  workflow        Department[]
+  workflow        Json        // Department 배열 (MySQL JSON 타입)
 
   // 낙관적 잠금
   version         Int         @default(1)
@@ -485,7 +485,30 @@ export const authConfig = {
 
 **출처**: [Auth.js RBAC 가이드](https://authjs.dev/guides/role-based-access-control)
 
-### 7.3 Prisma 낙관적 잠금
+### 7.3 MySQL + Prisma 주의사항
+
+```typescript
+// ⚠️ MySQL은 네이티브 배열 타입 미지원 - Json 타입 사용
+// Prisma 스키마
+model Case {
+  toothNumbers  Json  // ["11", "12", "21"] 형태로 저장
+  noteOptions   Json  // ["option1", "option2"] 형태로 저장
+  workflow      Json  // ["FRONT_DESK", "PRE_CAD"] 형태로 저장
+}
+
+// TypeScript에서 타입 안전하게 사용
+interface Case {
+  toothNumbers: string[];
+  noteOptions: string[];
+  workflow: Department[];
+}
+
+// 조회 시 타입 캐스팅
+const cases = await prisma.case.findMany();
+const toothNumbers = cases[0].toothNumbers as string[];
+```
+
+### 7.4 Prisma 낙관적 잠금
 
 ```typescript
 // 동시 수정 충돌 방지
@@ -507,7 +530,7 @@ async function updateCase(id: string, data: UpdateData, expectedVersion: number)
 }
 ```
 
-### 7.4 Tailwind CSS v4 설정
+### 7.5 Tailwind CSS v4 설정
 
 ```css
 /* src/app/globals.css */
@@ -523,7 +546,7 @@ async function updateCase(id: string, data: UpdateData, expectedVersion: number)
 
 **출처**: [Tailwind CSS v4 문서](https://tailwindcss.com/blog/tailwindcss-v4)
 
-### 7.5 Socket.io 연결 관리
+### 7.6 Socket.io 연결 관리
 
 ```typescript
 // ❌ 잘못된 방식 - 컴포넌트마다 연결 생성
@@ -563,7 +586,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/dentalflow
+      - DATABASE_URL=mysql://root:password@db:3306/dentalflow
       - NEXTAUTH_URL=https://your-domain.com
       - NEXTAUTH_SECRET=your-secret-key
     depends_on:
@@ -580,12 +603,13 @@ services:
       - redis
 
   db:
-    image: postgres:16-alpine
+    image: mysql:8.0
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
     environment:
-      - POSTGRES_DB=dentalflow
-      - POSTGRES_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=dentalflow
+    command: --default-authentication-plugin=mysql_native_password
 
   redis:
     image: redis:7-alpine
@@ -593,7 +617,7 @@ services:
       - redis_data:/data
 
 volumes:
-  postgres_data:
+  mysql_data:
   redis_data:
 ```
 
@@ -643,6 +667,7 @@ server {
 - [Next.js 15.5 릴리즈](https://nextjs.org/blog/next-15-5)
 - [Tailwind CSS v4.0](https://tailwindcss.com/blog/tailwindcss-v4)
 - [Prisma ORM 공식 문서](https://www.prisma.io/docs)
+- [Prisma MySQL 커넥터](https://www.prisma.io/docs/orm/overview/databases/mysql)
 - [Auth.js 역할 기반 접근 제어](https://authjs.dev/guides/role-based-access-control)
 - [Socket.IO vs Supabase 비교](https://ably.com/compare/socketio-vs-supabase)
 - [Next.js 15 프로젝트 구조 가이드](https://dev.to/bajrayejoon/best-practices-for-organizing-your-nextjs-15-2025-53ji)
