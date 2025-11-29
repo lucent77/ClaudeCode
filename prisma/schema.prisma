@@ -1,0 +1,335 @@
+// prisma/schema.prisma
+// DentalFlow - 치과 기공소 CADCAM 작업 관리 시스템
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ===== 사용자 관련 =====
+
+enum Role {
+  ADMIN
+  WORKER
+}
+
+enum Department {
+  FRONT_DESK
+  PRE_CAD
+  SOLIDEX_DESIGN
+  COCR_DESIGN
+  PRINT_3D_DESIGN
+  PRE_CAM
+  SOLIDEX
+  COCR
+  PRINT_3D
+}
+
+model User {
+  id            String      @id @default(cuid())
+  email         String      @unique
+  password      String      // bcrypt 해시
+  name          String
+  role          Role        @default(WORKER)
+  department    Department
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Auth.js 관련 필드
+  emailVerified DateTime?
+  image         String?
+
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  casesCreated  Case[]      @relation("CreatedBy")
+  caseHistories CaseHistory[]
+
+  // 작업자 할당 관련
+  assignedTasks     CaseAssignment[]    @relation("AssignedTo")
+  tasksAssignedBy   CaseAssignment[]    @relation("AssignedBy")
+  transfersFrom     AssignmentTransfer[] @relation("TransferFrom")
+  transfersTo       AssignmentTransfer[] @relation("TransferTo")
+
+  @@index([email])
+  @@index([department])
+  @@index([role])
+}
+
+// Auth.js 관련 모델
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?  @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ===== 케이스 관련 =====
+
+enum CaseStatus {
+  PENDING     // 대기중
+  IN_PROGRESS // 진행중
+  COMPLETED   // 완료
+  ON_HOLD     // 보류
+  CANCELLED   // 취소
+}
+
+model Case {
+  id              String      @id @default(cuid())
+  caseNumber      String      @unique // 자동생성: YYYYMMDD-XXXX
+
+  // 기본 정보
+  panNumber       String?
+  labDoctorName   String
+  patientName     String
+  quantity        Int         @default(1)
+  toothNumbers    Json        // 치아 번호 배열 (MySQL은 배열 미지원, JSON 사용)
+  toothColor      String?     @db.VarChar(50)
+  implantType     String?
+  dueDate         DateTime
+
+  // 작업 유형
+  cocrType        String?
+  solidexType     String?
+  print3dType     String?
+
+  // 노트 (다중 선택 + 자유 텍스트)
+  noteOptions     Json        // 선택된 옵션들 (MySQL JSON 타입)
+  noteText        String?     @db.Text  // 자유 텍스트
+
+  // 상태 및 부서
+  status          CaseStatus  @default(PENDING)
+  currentDepartment Department @default(FRONT_DESK)
+
+  // 워크플로우 (이 케이스가 거쳐야 할 부서들)
+  workflow        Json        // Department 배열 (MySQL JSON 타입)
+
+  // 낙관적 잠금
+  version         Int         @default(1)
+
+  // 타임스탬프
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Relations
+  createdBy       User        @relation("CreatedBy", fields: [createdById], references: [id])
+  createdById     String
+  histories       CaseHistory[]
+  departmentStatuses DepartmentStatus[]
+  assignments     CaseAssignment[]
+
+  @@index([caseNumber])
+  @@index([status])
+  @@index([currentDepartment])
+  @@index([dueDate])
+  @@index([createdById])
+  @@index([createdAt])
+}
+
+// 부서별 작업 상태 추적
+model DepartmentStatus {
+  id            String      @id @default(cuid())
+  caseId        String
+  department    Department
+  status        CaseStatus  @default(PENDING)
+  startedAt     DateTime?
+  completedAt   DateTime?
+
+  case          Case        @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+  @@unique([caseId, department])
+  @@index([caseId])
+  @@index([department])
+  @@index([status])
+}
+
+// 케이스 변경 이력
+model CaseHistory {
+  id          String      @id @default(cuid())
+  caseId      String
+  userId      String
+  action      String      // CREATE, UPDATE, STATUS_CHANGE, DEPARTMENT_CHANGE, ASSIGN, TRANSFER
+  changes     Json        // 변경 내역
+  createdAt   DateTime    @default(now())
+
+  case        Case        @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id])
+
+  @@index([caseId])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([action])
+}
+
+// NOTE 옵션 마스터
+model NoteOption {
+  id        String   @id @default(cuid())
+  label     String   @unique
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([sortOrder])
+}
+
+// ===== 부서별 커스터마이징 =====
+
+// 부서별 커스텀 작업 유형
+model TaskType {
+  id          String      @id @default(cuid())
+  department  Department
+  name        String      // "풀 크라운", "인레이" 등
+  description String?     @db.Text
+  color       String?     @db.VarChar(7)  // HEX 색상 (#FF5733)
+  isActive    Boolean     @default(true)
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([department, name])
+  @@index([department])
+  @@index([isActive])
+  @@index([sortOrder])
+}
+
+// 부서별 커스텀 필드 정의
+enum FieldType {
+  TEXT
+  NUMBER
+  SELECT
+  MULTI_SELECT
+  DATE
+  BOOLEAN
+}
+
+model CustomField {
+  id          String      @id @default(cuid())
+  department  Department
+  name        String      // 필드 이름 (코드용)
+  label       String      // 표시 레이블
+  fieldType   FieldType
+  options     Json?       // SELECT, MULTI_SELECT용 옵션 배열
+  defaultValue String?    // 기본값
+  placeholder String?     // 플레이스홀더
+  isRequired  Boolean     @default(false)
+  isActive    Boolean     @default(true)
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([department, name])
+  @@index([department])
+  @@index([isActive])
+  @@index([sortOrder])
+}
+
+// 부서별 커스텀 상태 (기본 상태 외 추가)
+model CustomStatus {
+  id          String      @id @default(cuid())
+  department  Department
+  name        String      // "검수중", "수정요청" 등
+  color       String?     @db.VarChar(7)
+  description String?
+  isActive    Boolean     @default(true)
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([department, name])
+  @@index([department])
+  @@index([isActive])
+  @@index([sortOrder])
+}
+
+// ===== 작업자 할당 =====
+
+// 케이스-부서별 작업자 할당
+model CaseAssignment {
+  id            String      @id @default(cuid())
+  caseId        String
+  department    Department
+  assigneeId    String      // 할당된 작업자
+  assignedById  String      // 할당한 사람
+  assignedAt    DateTime    @default(now())
+
+  // 작업 상태 (작업자 개인 레벨)
+  status        CaseStatus  @default(PENDING)
+  startedAt     DateTime?
+  completedAt   DateTime?
+
+  // 커스텀 필드 값 저장
+  customFieldValues Json?   // { "fieldId": "value", ... }
+
+  // 메모
+  notes         String?     @db.Text
+
+  case          Case        @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  assignee      User        @relation("AssignedTo", fields: [assigneeId], references: [id])
+  assignedBy    User        @relation("AssignedBy", fields: [assignedById], references: [id])
+
+  @@unique([caseId, department, assigneeId])
+  @@index([assigneeId])
+  @@index([caseId])
+  @@index([department])
+  @@index([status])
+  @@index([assignedAt])
+}
+
+// 작업 인계 이력
+model AssignmentTransfer {
+  id              String      @id @default(cuid())
+  caseId          String
+  department      Department
+  fromUserId      String
+  toUserId        String
+  reason          String      @db.Text
+  transferredAt   DateTime    @default(now())
+
+  fromUser        User        @relation("TransferFrom", fields: [fromUserId], references: [id])
+  toUser          User        @relation("TransferTo", fields: [toUserId], references: [id])
+
+  @@index([caseId])
+  @@index([fromUserId])
+  @@index([toUserId])
+  @@index([department])
+  @@index([transferredAt])
+}
