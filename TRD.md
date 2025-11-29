@@ -1,7 +1,8 @@
 # ⚙️ DentalFlow - 기술 사양서 (TRD)
 
-> **문서 버전**: 1.0
+> **문서 버전**: 1.1
 > **작성일**: 2025-11-29
+> **최종 수정**: 2025-11-29
 > **프로젝트명**: DentalFlow
 
 ---
@@ -22,7 +23,9 @@
 | **Real-time** | Socket.io | 4.x | WebSocket 통신 |
 | **State Management** | Zustand | 5.x | 경량 상태 관리 |
 | **Charts** | Recharts | 2.x | 대시보드 차트 |
-| **Hosting** | Hostinger VPS | - | Ubuntu 22.04 LTS |
+| **Process Manager** | PM2 | 5.x | Node.js 프로세스 관리 |
+| **Web Server** | OpenLiteSpeed | 1.7.x | Hostinger 기본 제공 (Nginx 대비 4배 빠름) |
+| **Hosting** | Hostinger VPS | KVM 2+ | Ubuntu 22.04 + Node.js 템플릿 |
 
 ---
 
@@ -62,35 +65,61 @@
 
 **출처**: [Tailwind CSS v4.0](https://tailwindcss.com/blog/tailwindcss-v4)
 
+### 2.4 Hostinger VPS 플랜 권장 사항
+
+| 플랜 | 사양 | 가격 | 80명 사용 적합성 |
+|------|------|------|-----------------|
+| KVM 1 | 1 vCPU, 4GB RAM, 50GB NVMe | $4.99/월 | ❌ 부족 |
+| **KVM 2** | **2 vCPU, 8GB RAM, 100GB NVMe** | **$6.99/월** | ✅ **권장** |
+| KVM 4 | 4 vCPU, 16GB RAM, 200GB NVMe | $12.99/월 | ✅ 여유 |
+
+**권장 설정**:
+- **OS 템플릿**: Ubuntu 22.04 with Node.js + OpenLiteSpeed
+- **이유**: OpenLiteSpeed가 Nginx보다 4배 빠르고, Hostinger에서 사전 최적화됨
+
+**출처**: [Hostinger VPS Plans](https://www.hostinger.com/vps-hosting)
+
 ---
 
 ## 3. 핵심 아키텍처
 
-### 3.1 시스템 아키텍처 다이어그램
+### 3.1 시스템 아키텍처 다이어그램 (Hostinger 최적화)
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Hostinger VPS                            │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │                    Docker Compose                         │   │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐   │   │
-│  │  │  Next.js    │  │  Socket.io  │  │     MySQL       │   │   │
-│  │  │  (Port 3000)│  │  (Port 3001)│  │   (Port 3306)   │   │   │
-│  │  └──────┬──────┘  └──────┬──────┘  └────────┬────────┘   │   │
-│  │         │                │                   │            │   │
-│  │         └────────────────┼───────────────────┘            │   │
-│  │                          │                                │   │
-│  │                    ┌─────▼─────┐                          │   │
-│  │                    │   Redis   │ (세션/캐시)               │   │
-│  │                    │(Port 6379)│                          │   │
-│  │                    └───────────┘                          │   │
-│  └──────────────────────────────────────────────────────────┘   │
-│                                                                 │
-│  ┌─────────────┐                                                │
-│  │    Nginx    │ (Reverse Proxy + SSL)                          │
-│  │  (Port 80/443)                                               │
-│  └─────────────┘                                                │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                    Hostinger VPS (KVM 2 권장)                         │
+│                    Ubuntu 22.04 + Node.js + OpenLiteSpeed            │
+│                                                                      │
+│  ┌────────────────────────────────────────────────────────────────┐  │
+│  │                    OpenLiteSpeed (Port 80/443)                 │  │
+│  │                    - SSL/TLS 자동 관리 (Let's Encrypt)          │  │
+│  │                    - Reverse Proxy + 정적 파일 캐싱             │  │
+│  └───────────────────────────┬────────────────────────────────────┘  │
+│                              │                                       │
+│         ┌────────────────────┼────────────────────┐                  │
+│         │                    │                    │                  │
+│         ▼                    ▼                    ▼                  │
+│  ┌─────────────┐      ┌─────────────┐      ┌─────────────┐          │
+│  │   Next.js   │      │  Socket.io  │      │    MySQL    │          │
+│  │  (PM2 관리)  │      │  (PM2 관리)  │      │  (Hostinger │          │
+│  │  Port 3000  │◄────►│  Port 3001  │◄────►│   기본제공)  │          │
+│  └──────┬──────┘      └──────┬──────┘      │  Port 3306  │          │
+│         │                    │              └─────────────┘          │
+│         │                    │                                       │
+│         └────────┬───────────┘                                       │
+│                  │                                                   │
+│           ┌──────▼──────┐                                            │
+│           │    Redis    │ (선택적 - 세션/캐시)                         │
+│           │  Port 6379  │                                            │
+│           └─────────────┘                                            │
+│                                                                      │
+│  ┌────────────────────────────────────────────────────────────────┐  │
+│  │                         PM2 Ecosystem                          │  │
+│  │  - next-app (cluster mode, 2 instances)                        │  │
+│  │  - socket-server (fork mode, 1 instance)                       │  │
+│  │  - 자동 재시작, 로그 관리, 모니터링                               │  │
+│  └────────────────────────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────────────────────────┘
                               │
                               ▼
                     ┌─────────────────┐
@@ -123,9 +152,8 @@
 dentalflow/
 ├── .env.local                    # 환경변수 (Git 제외)
 ├── .env.example                  # 환경변수 템플릿
-├── docker-compose.yml            # Docker 구성
+├── ecosystem.config.js           # PM2 설정 파일
 ├── next.config.ts                # Next.js 설정
-├── tailwind.config.ts            # Tailwind 설정
 ├── tsconfig.json                 # TypeScript 설정
 ├── package.json
 │
@@ -149,6 +177,8 @@ dentalflow/
 │   │   │   ├── layout.tsx        # 사이드바 포함 레이아웃
 │   │   │   ├── dashboard/
 │   │   │   │   └── page.tsx      # 관리자 대시보드
+│   │   │   ├── my-tasks/         # [신규] 마이 태스크
+│   │   │   │   └── page.tsx      # 개인 업무 대시보드
 │   │   │   ├── cases/
 │   │   │   │   ├── page.tsx      # 케이스 목록
 │   │   │   │   ├── [id]/
@@ -157,8 +187,14 @@ dentalflow/
 │   │   │   │       └── page.tsx  # 케이스 생성
 │   │   │   ├── users/
 │   │   │   │   └── page.tsx      # 사용자 관리 (관리자)
-│   │   │   └── settings/
-│   │   │       └── page.tsx      # 설정
+│   │   │   └── settings/         # [신규] 설정 확장
+│   │   │       ├── page.tsx      # 설정 메인
+│   │   │       ├── departments/
+│   │   │       │   └── page.tsx  # 부서별 커스터마이징
+│   │   │       ├── task-types/
+│   │   │       │   └── page.tsx  # 작업 유형 관리
+│   │   │       └── custom-fields/
+│   │   │           └── page.tsx  # 커스텀 필드 관리
 │   │   │
 │   │   └── api/                   # API Routes
 │   │       ├── auth/
@@ -166,10 +202,21 @@ dentalflow/
 │   │       │       └── route.ts
 │   │       ├── cases/
 │   │       │   ├── route.ts       # GET, POST
-│   │       │   └── [id]/
-│   │       │       └── route.ts   # GET, PUT, DELETE
+│   │       │   ├── [id]/
+│   │       │   │   └── route.ts   # GET, PUT, DELETE
+│   │       │   └── assign/        # [신규] 작업자 할당
+│   │       │       └── route.ts
+│   │       ├── my-tasks/          # [신규] 마이 태스크 API
+│   │       │   └── route.ts
 │   │       ├── users/
 │   │       │   └── route.ts
+│   │       ├── departments/       # [신규] 부서 설정 API
+│   │       │   ├── route.ts
+│   │       │   └── [id]/
+│   │       │       ├── task-types/
+│   │       │       │   └── route.ts
+│   │       │       └── custom-fields/
+│   │       │           └── route.ts
 │   │       └── stats/
 │   │           └── route.ts       # 통계 API
 │   │
@@ -190,7 +237,16 @@ dentalflow/
 │   │   │   ├── case-table.tsx
 │   │   │   ├── case-form.tsx
 │   │   │   ├── case-status-badge.tsx
-│   │   │   └── case-filter.tsx
+│   │   │   ├── case-filter.tsx
+│   │   │   └── assignee-modal.tsx # [신규] 작업자 할당 모달
+│   │   ├── my-tasks/              # [신규] 마이 태스크 컴포넌트
+│   │   │   ├── task-list.tsx
+│   │   │   ├── task-card.tsx
+│   │   │   └── today-summary.tsx
+│   │   ├── settings/              # [신규] 설정 컴포넌트
+│   │   │   ├── task-type-form.tsx
+│   │   │   ├── custom-field-form.tsx
+│   │   │   └── sortable-list.tsx  # 드래그 앤 드롭
 │   │   └── dashboard/             # 대시보드 컴포넌트
 │   │       ├── stats-cards.tsx
 │   │       ├── department-chart.tsx
@@ -206,15 +262,19 @@ dentalflow/
 │   ├── hooks/                     # 커스텀 훅
 │   │   ├── use-socket.ts          # Socket.io 훅
 │   │   ├── use-cases.ts           # 케이스 데이터 훅
+│   │   ├── use-my-tasks.ts        # [신규] 마이 태스크 훅
 │   │   └── use-realtime.ts        # 실시간 업데이트 훅
 │   │
 │   ├── stores/                    # Zustand 스토어
 │   │   ├── case-store.ts
+│   │   ├── my-task-store.ts       # [신규]
 │   │   └── user-store.ts
 │   │
 │   ├── types/                     # TypeScript 타입
 │   │   ├── case.ts
 │   │   ├── user.ts
+│   │   ├── task-type.ts           # [신규]
+│   │   ├── custom-field.ts        # [신규]
 │   │   └── index.ts
 │   │
 │   └── middleware.ts              # Next.js 미들웨어 (인증)
@@ -278,6 +338,12 @@ model User {
   // Relations
   casesCreated  Case[]      @relation("CreatedBy")
   caseHistories CaseHistory[]
+
+  // [신규] 작업자 할당 관련
+  assignedTasks     CaseAssignment[]    @relation("AssignedTo")
+  tasksAssignedBy   CaseAssignment[]    @relation("AssignedBy")
+  transfersFrom     AssignmentTransfer[] @relation("TransferFrom")
+  transfersTo       AssignmentTransfer[] @relation("TransferTo")
 }
 
 // ===== 케이스 관련 =====
@@ -332,6 +398,7 @@ model Case {
   createdById     String
   histories       CaseHistory[]
   departmentStatuses DepartmentStatus[]
+  assignments     CaseAssignment[]    // [신규] 작업자 할당
 
   @@index([caseNumber])
   @@index([status])
@@ -375,6 +442,112 @@ model NoteOption {
   label     String   @unique
   isActive  Boolean  @default(true)
   sortOrder Int      @default(0)
+}
+
+// ===== [신규] 부서별 커스터마이징 =====
+
+// 부서별 커스텀 작업 유형
+model TaskType {
+  id          String      @id @default(cuid())
+  department  Department
+  name        String      // "풀 크라운", "인레이" 등
+  description String?
+  color       String?     @db.VarChar(7)  // HEX 색상 (#FF5733)
+  isActive    Boolean     @default(true)
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([department, name])
+  @@index([department])
+}
+
+// 부서별 커스텀 필드 정의
+enum FieldType {
+  TEXT
+  NUMBER
+  SELECT
+  MULTI_SELECT
+  DATE
+  BOOLEAN
+}
+
+model CustomField {
+  id          String      @id @default(cuid())
+  department  Department
+  name        String      // 필드 이름
+  label       String      // 표시 레이블
+  fieldType   FieldType
+  options     Json?       // SELECT, MULTI_SELECT용 옵션 배열
+  isRequired  Boolean     @default(false)
+  isActive    Boolean     @default(true)
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([department, name])
+  @@index([department])
+}
+
+// 부서별 커스텀 상태 (기본 상태 외 추가)
+model CustomStatus {
+  id          String      @id @default(cuid())
+  department  Department
+  name        String      // "검수중", "수정요청" 등
+  color       String?     @db.VarChar(7)
+  isActive    Boolean     @default(true)
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+
+  @@unique([department, name])
+  @@index([department])
+}
+
+// ===== [신규] 작업자 할당 =====
+
+// 케이스-부서별 작업자 할당
+model CaseAssignment {
+  id            String      @id @default(cuid())
+  caseId        String
+  department    Department
+  assigneeId    String      // 할당된 작업자
+  assignedById  String      // 할당한 사람
+  assignedAt    DateTime    @default(now())
+
+  // 작업 상태 (작업자 개인 레벨)
+  status        CaseStatus  @default(PENDING)
+  startedAt     DateTime?
+  completedAt   DateTime?
+
+  // 커스텀 필드 값 저장
+  customFieldValues Json?   // { "fieldId": "value", ... }
+
+  case          Case        @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  assignee      User        @relation("AssignedTo", fields: [assigneeId], references: [id])
+  assignedBy    User        @relation("AssignedBy", fields: [assignedById], references: [id])
+
+  @@unique([caseId, department, assigneeId])
+  @@index([assigneeId])
+  @@index([caseId])
+  @@index([status])
+}
+
+// 작업 인계 이력
+model AssignmentTransfer {
+  id              String      @id @default(cuid())
+  caseId          String
+  department      Department
+  fromUserId      String
+  toUserId        String
+  reason          String      @db.Text
+  transferredAt   DateTime    @default(now())
+
+  fromUser        User        @relation("TransferFrom", fields: [fromUserId], references: [id])
+  toUser          User        @relation("TransferTo", fields: [toUserId], references: [id])
+
+  @@index([caseId])
+  @@index([fromUserId])
+  @@index([toUserId])
 }
 ```
 
@@ -572,106 +745,234 @@ export function getSocket() {
 
 ---
 
-## 8. 배포 환경 설정
+## 8. 배포 환경 설정 (Hostinger VPS 최적화)
 
-### 8.1 Docker Compose
+### 8.1 PM2 Ecosystem 설정
 
-```yaml
-# docker-compose.yml
-version: '3.8'
-
-services:
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_URL=mysql://root:password@db:3306/dentalflow
-      - NEXTAUTH_URL=https://your-domain.com
-      - NEXTAUTH_SECRET=your-secret-key
-    depends_on:
-      - db
-      - redis
-
-  socket:
-    build: ./server
-    ports:
-      - "3001:3001"
-    environment:
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      - redis
-
-  db:
-    image: mysql:8.0
-    volumes:
-      - mysql_data:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=dentalflow
-    command: --default-authentication-plugin=mysql_native_password
-
-  redis:
-    image: redis:7-alpine
-    volumes:
-      - redis_data:/data
-
-volumes:
-  mysql_data:
-  redis_data:
+```javascript
+// ecosystem.config.js
+module.exports = {
+  apps: [
+    {
+      name: 'dentalflow-web',
+      script: 'node_modules/next/dist/bin/next',
+      args: 'start',
+      cwd: '/var/www/dentalflow',
+      instances: 2,           // KVM 2 기준 (2 vCPU)
+      exec_mode: 'cluster',   // 클러스터 모드로 부하 분산
+      env: {
+        NODE_ENV: 'production',
+        PORT: 3000
+      },
+      env_file: '.env.local',
+      max_memory_restart: '500M',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      error_file: '/var/log/pm2/dentalflow-error.log',
+      out_file: '/var/log/pm2/dentalflow-out.log',
+      merge_logs: true
+    },
+    {
+      name: 'dentalflow-socket',
+      script: 'server/index.js',
+      cwd: '/var/www/dentalflow',
+      instances: 1,
+      exec_mode: 'fork',
+      env: {
+        NODE_ENV: 'production',
+        PORT: 3001
+      },
+      env_file: '.env.local',
+      max_memory_restart: '200M',
+      error_file: '/var/log/pm2/socket-error.log',
+      out_file: '/var/log/pm2/socket-out.log'
+    }
+  ]
+};
 ```
 
-### 8.2 Nginx 설정
+### 8.2 PM2 명령어
 
-```nginx
-# /etc/nginx/sites-available/dentalflow
-server {
-    listen 80;
-    server_name your-domain.com;
-    return 301 https://$server_name$request_uri;
+```bash
+# 앱 시작
+pm2 start ecosystem.config.js
+
+# 상태 확인
+pm2 status
+
+# 로그 확인
+pm2 logs dentalflow-web
+
+# 재시작
+pm2 restart all
+
+# 시스템 부팅 시 자동 시작 설정
+pm2 startup
+pm2 save
+
+# 모니터링 대시보드
+pm2 monit
+```
+
+### 8.3 OpenLiteSpeed 설정
+
+Hostinger VPS의 Node.js 템플릿은 OpenLiteSpeed가 기본 설치됩니다.
+WebAdmin 패널 (https://your-ip:7080)에서 설정하거나 직접 설정 파일을 수정합니다.
+
+```
+# /usr/local/lsws/conf/vhosts/dentalflow/vhconf.conf
+
+docRoot                   /var/www/dentalflow/public
+vhDomain                  your-domain.com
+enableGzip                1
+
+# Next.js Proxy 설정
+context / {
+  type                    proxy
+  handler                 localhost:3000
+  addDefaultCharset       off
 }
 
-server {
-    listen 443 ssl http2;
-    server_name your-domain.com;
+# Socket.io WebSocket Proxy
+context /socket.io {
+  type                    proxy
+  handler                 localhost:3001
+  addDefaultCharset       off
 
-    ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
-
-    # Next.js 앱
-    location / {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-
-    # Socket.io
-    location /socket.io/ {
-        proxy_pass http://localhost:3001;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
-    }
+  # WebSocket 지원
+  extraHeaders            Upgrade $http_upgrade
+  extraHeaders            Connection "upgrade"
 }
+
+# 정적 파일 직접 서빙 (성능 최적화)
+context /static {
+  location                /var/www/dentalflow/.next/static
+  allowBrowse             1
+  expires                 365d
+  extraHeaders            Cache-Control "public, max-age=31536000, immutable"
+}
+
+# SSL/TLS 설정 (Let's Encrypt)
+vhssl {
+  keyFile                 /etc/letsencrypt/live/your-domain.com/privkey.pem
+  certFile                /etc/letsencrypt/live/your-domain.com/fullchain.pem
+}
+```
+
+### 8.4 MySQL 설정 (Hostinger 기본 제공)
+
+```bash
+# Hostinger VPS에서 MySQL은 기본 설치됨
+# 초기 설정
+sudo mysql_secure_installation
+
+# 데이터베이스 및 사용자 생성
+mysql -u root -p
+```
+
+```sql
+CREATE DATABASE dentalflow CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'dentalflow'@'localhost' IDENTIFIED BY 'your-secure-password';
+GRANT ALL PRIVILEGES ON dentalflow.* TO 'dentalflow'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+### 8.5 Redis 설치 (선택사항)
+
+```bash
+# Redis 설치
+sudo apt update
+sudo apt install redis-server
+
+# 설정 파일 수정
+sudo nano /etc/redis/redis.conf
+# maxmemory 256mb
+# maxmemory-policy allkeys-lru
+
+# 서비스 시작
+sudo systemctl enable redis-server
+sudo systemctl start redis-server
+```
+
+### 8.6 환경변수 (.env.local)
+
+```bash
+# Database
+DATABASE_URL="mysql://dentalflow:your-password@localhost:3306/dentalflow"
+
+# NextAuth
+NEXTAUTH_URL="https://your-domain.com"
+NEXTAUTH_SECRET="your-random-secret-key-here"
+
+# Socket.io
+NEXT_PUBLIC_SOCKET_URL="https://your-domain.com"
+
+# Redis (선택사항)
+REDIS_URL="redis://localhost:6379"
+```
+
+### 8.7 배포 스크립트
+
+```bash
+#!/bin/bash
+# deploy.sh
+
+set -e
+
+echo "📦 Pulling latest changes..."
+git pull origin main
+
+echo "📥 Installing dependencies..."
+npm ci --production=false
+
+echo "🔨 Building application..."
+npm run build
+
+echo "🗄️ Running database migrations..."
+npx prisma migrate deploy
+
+echo "🔄 Restarting PM2 processes..."
+pm2 restart ecosystem.config.js
+
+echo "✅ Deployment complete!"
+```
+
+### 8.8 SSL 인증서 (Let's Encrypt)
+
+```bash
+# Certbot 설치
+sudo apt install certbot
+
+# 인증서 발급 (OpenLiteSpeed 중지 후)
+sudo lswsctrl stop
+sudo certbot certonly --standalone -d your-domain.com
+sudo lswsctrl start
+
+# 자동 갱신 설정
+sudo crontab -e
+# 0 0 1 * * certbot renew --pre-hook "lswsctrl stop" --post-hook "lswsctrl start"
 ```
 
 ---
 
 ## 9. 참고 자료 (Sources)
 
+### Framework & Libraries
 - [Next.js 15 공식 블로그](https://nextjs.org/blog/next-15)
-- [Next.js 15.5 릴리즈](https://nextjs.org/blog/next-15-5)
 - [Tailwind CSS v4.0](https://tailwindcss.com/blog/tailwindcss-v4)
 - [Prisma ORM 공식 문서](https://www.prisma.io/docs)
 - [Prisma MySQL 커넥터](https://www.prisma.io/docs/orm/overview/databases/mysql)
 - [Auth.js 역할 기반 접근 제어](https://authjs.dev/guides/role-based-access-control)
-- [Socket.IO vs Supabase 비교](https://ably.com/compare/socketio-vs-supabase)
-- [Next.js 15 프로젝트 구조 가이드](https://dev.to/bajrayejoon/best-practices-for-organizing-your-nextjs-15-2025-53ji)
+- [Socket.IO 공식 문서](https://socket.io/docs/v4/)
 - [shadcn/ui Tailwind v4](https://ui.shadcn.com/docs/tailwind-v4)
+
+### Hostinger VPS & 배포
+- [Hostinger VPS Plans](https://www.hostinger.com/vps-hosting)
+- [Hostinger Node.js VPS](https://www.hostinger.com/vps/nodejs-hosting)
+- [Hostinger Redis VPS](https://www.hostinger.com/vps/redis-hosting)
+- [Next.js on Hostinger VPS with Docker](https://medium.com/@afaqak124/deploying-your-next-js-app-on-hostinger-vps-with-docker-part-1-26741c113d33)
+- [PM2 공식 문서](https://pm2.keymetrics.io/docs/usage/quick-start/)
+- [OpenLiteSpeed vs NGINX 비교](https://cyberhosting.cloud/blog/openlitespeed-vs-nginx/)
+- [OpenLiteSpeed 공식 문서](https://openlitespeed.org/kb/)
 
 ---
 
