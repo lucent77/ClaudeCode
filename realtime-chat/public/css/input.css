@@ -1,0 +1,260 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply bg-dark-bg text-dark-text font-slack antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-dark-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+  }
+}
+
+@layer components {
+  /* Sidebar styles */
+  .sidebar {
+    @apply bg-slack-purple-dark h-screen flex flex-col;
+  }
+
+  .sidebar-item {
+    @apply flex items-center gap-2 px-4 py-1.5 mx-2 rounded-md cursor-pointer
+           text-gray-300 hover:bg-slack-purple-light/50 transition-all duration-150;
+  }
+
+  .sidebar-item.active {
+    @apply bg-dark-active text-white;
+  }
+
+  .sidebar-section-title {
+    @apply flex items-center justify-between px-4 py-2 text-sm text-gray-400
+           hover:text-gray-200 cursor-pointer;
+  }
+
+  /* Channel styles */
+  .channel-item {
+    @apply sidebar-item text-sm;
+  }
+
+  .channel-item::before {
+    content: '#';
+    @apply text-gray-500 mr-1;
+  }
+
+  /* Message styles */
+  .message-container {
+    @apply flex gap-3 px-5 py-2 hover:bg-dark-hover/50 group transition-colors;
+  }
+
+  .message-avatar {
+    @apply w-9 h-9 rounded-lg bg-gradient-to-br from-slack-blue to-slack-green
+           flex items-center justify-center text-white font-semibold text-sm flex-shrink-0;
+  }
+
+  .message-content {
+    @apply flex-1 min-w-0;
+  }
+
+  .message-header {
+    @apply flex items-baseline gap-2;
+  }
+
+  .message-author {
+    @apply font-bold text-white hover:underline cursor-pointer;
+  }
+
+  .message-time {
+    @apply text-xs text-dark-text-muted;
+  }
+
+  .message-text {
+    @apply text-dark-text leading-relaxed break-words;
+  }
+
+  .message-actions {
+    @apply opacity-0 group-hover:opacity-100 absolute right-4 -top-4
+           bg-dark-bg border border-dark-border rounded-lg shadow-lg
+           flex items-center transition-opacity;
+  }
+
+  .message-action-btn {
+    @apply p-2 hover:bg-dark-hover text-dark-text-muted hover:text-white transition-colors;
+  }
+
+  /* Input styles */
+  .chat-input-container {
+    @apply mx-5 mb-5 bg-dark-bg border border-dark-border rounded-lg overflow-hidden
+           focus-within:border-gray-500 transition-colors;
+  }
+
+  .chat-input {
+    @apply w-full bg-transparent px-4 py-3 text-dark-text placeholder-dark-text-muted
+           outline-none resize-none;
+  }
+
+  .chat-input-toolbar {
+    @apply flex items-center justify-between px-3 py-2 border-t border-dark-border;
+  }
+
+  .toolbar-btn {
+    @apply p-1.5 rounded hover:bg-dark-hover text-dark-text-muted
+           hover:text-white transition-colors;
+  }
+
+  .send-btn {
+    @apply px-3 py-1.5 bg-slack-green text-white rounded font-medium
+           hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed
+           transition-all;
+  }
+
+  /* Modal styles */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/60 flex items-center justify-center z-50
+           animate-fade-in;
+  }
+
+  .modal-content {
+    @apply bg-dark-bg border border-dark-border rounded-xl shadow-2xl
+           w-full max-w-md mx-4 animate-slide-in;
+  }
+
+  .modal-header {
+    @apply flex items-center justify-between px-6 py-4 border-b border-dark-border;
+  }
+
+  .modal-body {
+    @apply px-6 py-4;
+  }
+
+  .modal-footer {
+    @apply flex justify-end gap-3 px-6 py-4 border-t border-dark-border;
+  }
+
+  /* Form styles */
+  .form-input {
+    @apply w-full bg-dark-hover border border-dark-border rounded-lg px-4 py-2.5
+           text-dark-text placeholder-dark-text-muted outline-none
+           focus:border-slack-blue focus:ring-1 focus:ring-slack-blue
+           transition-colors;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-dark-text mb-1.5;
+  }
+
+  /* Button styles */
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-150;
+  }
+
+  .btn-primary {
+    @apply btn bg-slack-green text-white hover:bg-opacity-90;
+  }
+
+  .btn-secondary {
+    @apply btn bg-dark-hover text-dark-text hover:bg-dark-border;
+  }
+
+  .btn-danger {
+    @apply btn bg-slack-red text-white hover:bg-opacity-90;
+  }
+
+  /* Status indicator */
+  .status-dot {
+    @apply w-2.5 h-2.5 rounded-full;
+  }
+
+  .status-online {
+    @apply status-dot bg-slack-green;
+  }
+
+  .status-away {
+    @apply status-dot bg-slack-yellow;
+  }
+
+  .status-offline {
+    @apply status-dot bg-gray-500;
+  }
+
+  /* Typing indicator */
+  .typing-indicator {
+    @apply flex items-center gap-1 px-5 py-2 text-sm text-dark-text-muted;
+  }
+
+  .typing-dot {
+    @apply w-2 h-2 bg-dark-text-muted rounded-full animate-pulse-soft;
+  }
+
+  /* Unread badge */
+  .unread-badge {
+    @apply bg-slack-red text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center;
+  }
+
+  /* User list */
+  .user-item {
+    @apply flex items-center gap-3 px-4 py-2 hover:bg-dark-hover rounded-lg cursor-pointer transition-colors;
+  }
+
+  /* Thread styles */
+  .thread-preview {
+    @apply mt-2 pl-3 border-l-2 border-dark-border text-sm text-dark-text-muted;
+  }
+
+  /* Emoji reaction */
+  .emoji-reaction {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 bg-dark-hover
+           border border-dark-border rounded-full text-sm cursor-pointer
+           hover:bg-dark-border transition-colors;
+  }
+
+  /* Search styles */
+  .search-container {
+    @apply relative;
+  }
+
+  .search-input {
+    @apply w-full bg-dark-hover/50 border border-transparent rounded-md
+           px-10 py-1.5 text-sm text-dark-text placeholder-dark-text-muted
+           focus:bg-dark-hover focus:border-dark-border outline-none transition-all;
+  }
+
+  .search-icon {
+    @apply absolute left-3 top-1/2 -translate-y-1/2 text-dark-text-muted;
+  }
+
+  /* Loading spinner */
+  .spinner {
+    @apply w-6 h-6 border-2 border-dark-border border-t-slack-blue rounded-full animate-spin;
+  }
+
+  /* Toast notification */
+  .toast {
+    @apply fixed bottom-5 right-5 bg-dark-bg border border-dark-border rounded-lg
+           shadow-lg px-4 py-3 flex items-center gap-3 animate-slide-in z-50;
+  }
+
+  .toast-success {
+    @apply border-l-4 border-l-slack-green;
+  }
+
+  .toast-error {
+    @apply border-l-4 border-l-slack-red;
+  }
+}
