@@ -1,0 +1,163 @@
+/**
+ * Creodent Dashboard - Custom Styles
+ * Minimal custom CSS (most styling via Tailwind CDN)
+ */
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Table sorting indicators */
+th[data-sort] {
+    cursor: pointer;
+    user-select: none;
+}
+
+th.sort-asc svg {
+    transform: rotate(180deg);
+}
+
+th.sort-desc svg {
+    transform: rotate(0deg);
+}
+
+/* Chart container animations */
+canvas {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Card hover effects */
+.hover-lift {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading spinner */
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Print styles */
+@media print {
+    aside,
+    nav,
+    .no-print {
+        display: none !important;
+    }
+
+    main {
+        padding-left: 0 !important;
+    }
+
+    .bg-white {
+        box-shadow: none !important;
+        border: 1px solid #e5e7eb !important;
+    }
+}
+
+/* Mobile improvements */
+@media (max-width: 640px) {
+    .overflow-x-auto table {
+        font-size: 0.875rem;
+    }
+
+    .overflow-x-auto th,
+    .overflow-x-auto td {
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+/* Branch color indicators */
+.branch-all { color: #3b82f6; }
+.branch-nyc { color: #f59e0b; }
+.branch-hv { color: #10b981; }
+
+.bg-branch-all { background-color: #3b82f6; }
+.bg-branch-nyc { background-color: #f59e0b; }
+.bg-branch-hv { background-color: #10b981; }
+
+/* Status colors */
+.status-active { color: #10b981; }
+.status-inactive { color: #6b7280; }
+.status-warning { color: #f59e0b; }
+.status-danger { color: #ef4444; }
+
+/* Trend indicators */
+.trend-up {
+    color: #10b981;
+}
+
+.trend-up::before {
+    content: '↑ ';
+}
+
+.trend-down {
+    color: #ef4444;
+}
+
+.trend-down::before {
+    content: '↓ ';
+}
+
+.trend-neutral {
+    color: #6b7280;
+}
+
+/* Focus visible styles */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Disabled states */
+button:disabled,
+input:disabled,
+select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
