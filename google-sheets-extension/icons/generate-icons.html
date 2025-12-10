@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>아이콘 생성기</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .icons {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    .icon-item {
+      text-align: center;
+    }
+    .icon-item canvas {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .icon-item p {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #666;
+    }
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .instructions {
+      background: #e8f4fc;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #333;
+    }
+    .instructions ol {
+      margin-left: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Chrome 확장 프로그램 아이콘 생성기</h1>
+
+    <p>아래 캔버스에서 아이콘을 확인하고, 버튼을 클릭하여 PNG 파일로 다운로드하세요.</p>
+
+    <div class="icons">
+      <div class="icon-item">
+        <canvas id="icon16" width="16" height="16"></canvas>
+        <p>16x16</p>
+        <button onclick="downloadIcon(16)">다운로드</button>
+      </div>
+      <div class="icon-item">
+        <canvas id="icon48" width="48" height="48"></canvas>
+        <p>48x48</p>
+        <button onclick="downloadIcon(48)">다운로드</button>
+      </div>
+      <div class="icon-item">
+        <canvas id="icon128" width="128" height="128"></canvas>
+        <p>128x128</p>
+        <button onclick="downloadIcon(128)">다운로드</button>
+      </div>
+    </div>
+
+    <button onclick="downloadAll()">모든 아이콘 다운로드</button>
+
+    <div class="instructions">
+      <h3>사용 방법:</h3>
+      <ol>
+        <li>이 HTML 파일을 브라우저에서 엽니다</li>
+        <li>"모든 아이콘 다운로드" 버튼을 클릭합니다</li>
+        <li>다운로드된 PNG 파일들을 <code>icons</code> 폴더에 저장합니다</li>
+        <li>파일명: icon16.png, icon48.png, icon128.png</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    // 아이콘 그리기 함수
+    function drawIcon(size) {
+      const canvas = document.getElementById('icon' + size);
+      const ctx = canvas.getContext('2d');
+
+      // 배경 그라데이션
+      const gradient = ctx.createLinearGradient(0, 0, size, size);
+      gradient.addColorStop(0, '#34a853');  // Google 녹색
+      gradient.addColorStop(1, '#0f9d58');
+
+      // 둥근 사각형 배경
+      ctx.fillStyle = gradient;
+      roundRect(ctx, 0, 0, size, size, size * 0.15);
+      ctx.fill();
+
+      // 스프레드시트 그리드 그리기
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = Math.max(1, size * 0.04);
+
+      const padding = size * 0.2;
+      const gridSize = size - padding * 2;
+
+      // 세로선
+      for (let i = 0; i <= 3; i++) {
+        const x = padding + (gridSize / 3) * i;
+        ctx.beginPath();
+        ctx.moveTo(x, padding);
+        ctx.lineTo(x, size - padding);
+        ctx.stroke();
+      }
+
+      // 가로선
+      for (let i = 0; i <= 4; i++) {
+        const y = padding + (gridSize / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(padding, y);
+        ctx.lineTo(size - padding, y);
+        ctx.stroke();
+      }
+
+      return canvas;
+    }
+
+    // 둥근 사각형 그리기 헬퍼
+    function roundRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    }
+
+    // 아이콘 다운로드
+    function downloadIcon(size) {
+      const canvas = document.getElementById('icon' + size);
+      const link = document.createElement('a');
+      link.download = `icon${size}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // 모든 아이콘 다운로드
+    function downloadAll() {
+      [16, 48, 128].forEach((size, index) => {
+        setTimeout(() => downloadIcon(size), index * 300);
+      });
+    }
+
+    // 페이지 로드 시 아이콘 생성
+    window.onload = function() {
+      drawIcon(16);
+      drawIcon(48);
+      drawIcon(128);
+    };
+  </script>
+</body>
+</html>
