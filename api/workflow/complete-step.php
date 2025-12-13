@@ -4,7 +4,7 @@
  * POST /api/workflow/complete-step.php
  */
 
-require_once __DIR__ . '/../../../includes/bootstrap.php';
+require_once __DIR__ . '/../../includes/bootstrap.php';
 
 header('Content-Type: application/json');
 

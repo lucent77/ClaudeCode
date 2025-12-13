@@ -4,7 +4,7 @@
  * Special handling for per-tooth workflow tracking
  */
 
-require_once __DIR__ . '/../../../includes/bootstrap.php';
+require_once __DIR__ . '/../../includes/bootstrap.php';
 
 auth()->requireDepartment(DEPT_SOLIDEX);
 

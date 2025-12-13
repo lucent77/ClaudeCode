@@ -3,7 +3,7 @@
  * CAD/CAM Workflow System - Main Entry Point
  */
 
-require_once __DIR__ . '/../includes/bootstrap.php';
+require_once __DIR__ . '/includes/bootstrap.php';
 
 // Redirect to appropriate page based on auth status
 if (!auth()->isLoggedIn()) {

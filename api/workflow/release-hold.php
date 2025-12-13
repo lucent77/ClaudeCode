@@ -1,10 +1,10 @@
 <?php
 /**
- * API: Bulk Set Hold
- * POST /api/workflow/bulk-hold.php
+ * API: Release Hold
+ * POST /api/workflow/release-hold.php
  */
 
-require_once __DIR__ . '/../../../includes/bootstrap.php';
+require_once __DIR__ . '/../../includes/bootstrap.php';
 
 header('Content-Type: application/json');
 
@@ -24,12 +24,12 @@ if (!$input) {
     jsonError('Invalid request body');
 }
 
-$entityIds = $input['entity_ids'] ?? [];
-$department = $input['department'] ?? '';
-$reason = trim($input['reason'] ?? '');
+$entityId = (int) ($input['entity_id'] ?? 0);
 $entityType = $input['entity_type'] ?? 'CASE';
+$department = $input['department'] ?? '';
+$notes = $input['notes'] ?? null;
 
-if (empty($entityIds) || !$department || !$reason) {
+if (!$entityId || !$department) {
     jsonError('Missing required fields');
 }
 
@@ -41,6 +41,9 @@ if (!auth()->hasAccessToDepartment($department)) {
     jsonError('Access denied', 403);
 }
 
-$results = workflow()->bulkSetHold($department, $entityIds, $reason, strtoupper($entityType));
-
-jsonSuccess($results, count($results['success']) . ' item(s) placed on hold');
+try {
+    workflow()->releaseHold($department, $entityId, $notes, strtoupper($entityType));
+    jsonSuccess(null, 'Hold released successfully');
+} catch (Exception $e) {
+    jsonError($e->getMessage());
+}

@@ -1,16 +1,16 @@
 <?php
 /**
- * COCR Department Dashboard
+ * 3D Print Department Dashboard
  */
 
-require_once __DIR__ . '/../../../includes/bootstrap.php';
+require_once __DIR__ . '/../../includes/bootstrap.php';
 
-auth()->requireDepartment(DEPT_COCR);
+auth()->requireDepartment(DEPT_3D_PRINT);
 
-$pageTitle = 'COCR Department';
-$pageDescription = 'Manage COCR workflow and cases';
+$pageTitle = '3D Print Department';
+$pageDescription = 'Manage 3D Print workflow and cases';
 
-$department = DEPT_COCR;
+$department = DEPT_3D_PRINT;
 
 // Get filters
 $filters = [
@@ -36,10 +36,10 @@ ob_start();
 ?>
 
 <!-- Step Overview Cards -->
-<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
     <?php foreach ($steps as $step): ?>
         <?php $stat = $stepStats[$step['step_code']] ?? ['count' => 0, 'on_hold' => 0]; ?>
-        <a href="?step=<?= e($step['step_code']) ?>" class="bg-white rounded-lg shadow p-4 hover:shadow-md transition-shadow <?= $filters['step'] === $step['step_code'] ? 'ring-2 ring-blue-500' : '' ?>">
+        <a href="?step=<?= e($step['step_code']) ?>" class="bg-white rounded-lg shadow p-4 hover:shadow-md transition-shadow <?= $filters['step'] === $step['step_code'] ? 'ring-2 ring-violet-500' : '' ?>">
             <div class="flex items-center justify-between">
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <?= stepBadgeClass($step['step_code']) ?>">
                     <?= e($step['step_code']) ?>
@@ -89,23 +89,23 @@ ob_start();
             </div>
             <div class="flex items-end space-x-2">
                 <button type="submit" class="btn btn-primary">Filter</button>
-                <a href="<?= url('/department/cocr/dashboard.php') ?>" class="btn btn-secondary">Reset</a>
+                <a href="<?= url('/department/3d-print/dashboard.php') ?>" class="btn btn-secondary">Reset</a>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Bulk Action Bar -->
-<div id="bulkActionBar" class="hidden bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+<div id="bulkActionBar" class="hidden bg-violet-50 border border-violet-200 rounded-lg p-4 mb-6">
     <div class="flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center">
-            <span class="text-sm font-medium text-blue-800">
+            <span class="text-sm font-medium text-violet-800">
                 <span id="selectedCount">0</span> cases selected
             </span>
         </div>
         <div class="flex flex-wrap items-center gap-3">
-            <input type="text" id="bulkMachineInput" placeholder="Machine name (if required)"
-                   class="form-input text-sm w-40 hidden">
+            <input type="text" id="nestingJobName" placeholder="Nesting job name"
+                   class="form-input text-sm w-48 hidden">
             <button onclick="bulkCompleteStep()" class="btn btn-success text-sm">Complete Selected</button>
             <button onclick="showBulkHoldModal()" class="btn btn-warning text-sm">Put On Hold</button>
             <button onclick="clearSelection()" class="btn btn-secondary text-sm">Clear</button>
@@ -122,7 +122,7 @@ ob_start();
             </h3>
             <label class="flex items-center text-sm">
                 <input type="checkbox" onchange="window.location.href='?show_completed=' + (this.checked ? '1' : '')" <?= $filters['completed'] ? 'checked' : '' ?>
-                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-2">
+                       class="h-4 w-4 text-violet-600 focus:ring-violet-500 border-gray-300 rounded mr-2">
                 Show Completed
             </label>
         </div>
@@ -142,14 +142,14 @@ ob_start();
                     <tr>
                         <th scope="col" class="px-3 py-3">
                             <input type="checkbox" id="selectAll" onchange="toggleSelectAll()"
-                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                   class="h-4 w-4 text-violet-600 focus:ring-violet-500 border-gray-300 rounded">
                         </th>
                         <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Case #</th>
                         <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lab / Patient</th>
-                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Type</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Print Type</th>
                         <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
                         <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Current Step</th>
-                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nesting Job</th>
                         <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th scope="col" class="relative px-4 py-3"><span class="sr-only">Actions</span></th>
                     </tr>
@@ -159,7 +159,7 @@ ob_start();
                         <tr class="hover:bg-gray-50 case-row" data-id="<?= $case['id'] ?>" data-step="<?= e($case['current_step_code']) ?>">
                             <td class="px-3 py-4">
                                 <?php if (!$case['is_on_hold'] && !$case['is_completed']): ?>
-                                    <input type="checkbox" class="case-checkbox h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                    <input type="checkbox" class="case-checkbox h-4 w-4 text-violet-600 focus:ring-violet-500 border-gray-300 rounded"
                                            onchange="updateBulkSelection()">
                                 <?php endif; ?>
                             </td>
@@ -176,7 +176,7 @@ ob_start();
                                 <div class="text-sm text-gray-500"><?= e($case['patient_name'] ?? '-') ?></div>
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <?= e($case['job_type'] ?? '-') ?>
+                                <?= e($case['print_type'] ?? '-') ?>
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <?= dueDateClass($case['due_date']) ?>">
@@ -194,17 +194,12 @@ ob_start();
                                     </span>
                                 <?php endif; ?>
                             </td>
-                            <td class="px-4 py-4">
-                                <?php $tagIds = parseNoteTags($case['note_tags']); ?>
-                                <?php if (!empty($tagIds)): ?>
-                                    <?= renderNoteTags($tagIds, $noteTags) ?>
-                                <?php else: ?>
-                                    <span class="text-gray-400">-</span>
-                                <?php endif; ?>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <?= e($case['nesting_job_name'] ?? '-') ?>
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <?php if ($case['is_on_hold']): ?>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800" title="<?= e($case['hold_reason']) ?>">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                                         On Hold
                                     </span>
                                 <?php elseif ($case['is_completed']): ?>
@@ -271,9 +266,7 @@ ob_start();
 
 <script>
     const department = '<?= $department ?>';
-    const machineSteps = ['CNC', 'OVENS'];
-
-    // Include shared workflow JavaScript
+    const machineSteps = []; // 3D Print doesn't use machines like COCR/SOLIDEX
 </script>
 <?php include APP_ROOT . '/views/components/workflow-scripts.php'; ?>
 

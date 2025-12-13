@@ -1,10 +1,10 @@
 <?php
 /**
- * API: Release Hold
- * POST /api/workflow/release-hold.php
+ * API: Set Hold
+ * POST /api/workflow/set-hold.php
  */
 
-require_once __DIR__ . '/../../../includes/bootstrap.php';
+require_once __DIR__ . '/../../includes/bootstrap.php';
 
 header('Content-Type: application/json');
 
@@ -27,9 +27,9 @@ if (!$input) {
 $entityId = (int) ($input['entity_id'] ?? 0);
 $entityType = $input['entity_type'] ?? 'CASE';
 $department = $input['department'] ?? '';
-$notes = $input['notes'] ?? null;
+$reason = trim($input['reason'] ?? '');
 
-if (!$entityId || !$department) {
+if (!$entityId || !$department || !$reason) {
     jsonError('Missing required fields');
 }
 
@@ -42,8 +42,8 @@ if (!auth()->hasAccessToDepartment($department)) {
 }
 
 try {
-    workflow()->releaseHold($department, $entityId, $notes, strtoupper($entityType));
-    jsonSuccess(null, 'Hold released successfully');
+    workflow()->setHold($department, $entityId, $reason, strtoupper($entityType));
+    jsonSuccess(null, 'Case placed on hold');
 } catch (Exception $e) {
     jsonError($e->getMessage());
 }

@@ -3,7 +3,7 @@
  * Super Admin Dashboard
  */
 
-require_once __DIR__ . '/../../includes/bootstrap.php';
+require_once __DIR__ . '/../includes/bootstrap.php';
 
 auth()->requireRole(ROLE_SUPER_ADMIN);
 
