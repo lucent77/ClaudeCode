@@ -1,0 +1,253 @@
+/**
+ * Confetti and Celebration Effects
+ */
+
+/* Confetti Canvas */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10000;
+}
+
+/* Winner Celebration Animation */
+.celebration-active {
+  animation: celebration-bg 2s ease;
+}
+
+@keyframes celebration-bg {
+  0% { background-color: transparent; }
+  25% { background-color: rgba(52, 211, 153, 0.1); }
+  50% { background-color: rgba(125, 211, 252, 0.1); }
+  75% { background-color: rgba(244, 114, 182, 0.1); }
+  100% { background-color: transparent; }
+}
+
+/* Sparkle effect */
+.sparkle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  animation: sparkle 1s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes sparkle {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+/* Star burst */
+.star-burst {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  background: var(--warn);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  animation: star-burst 1.5s ease-out forwards;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+@keyframes star-burst {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(2) rotate(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Floating text */
+.floating-text {
+  position: fixed;
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--good);
+  text-shadow: 0 0 20px var(--good-glow);
+  animation: float-up 2s ease-out forwards;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+@keyframes float-up {
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    transform: translateY(-20px) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-200px) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Jackpot special effects */
+.jackpot-celebration {
+  animation: jackpot-flash 0.5s ease 3;
+}
+
+@keyframes jackpot-flash {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(244, 114, 182, 0);
+  }
+  50% {
+    box-shadow: 0 0 100px rgba(244, 114, 182, 0.5);
+  }
+}
+
+/* Prize reveal animation */
+.prize-reveal {
+  animation: prize-reveal 0.5s ease forwards;
+}
+
+@keyframes prize-reveal {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Name slot machine effect */
+.slot-name {
+  overflow: hidden;
+  height: 100px;
+  position: relative;
+}
+
+.slot-name-inner {
+  animation: slot-spin 0.1s linear infinite;
+}
+
+.slot-name-inner.stopped {
+  animation: none;
+}
+
+@keyframes slot-spin {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100px); }
+}
+
+/* Pulse ring effect */
+.pulse-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid var(--accent);
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* Glow effect */
+.glow-effect {
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+  100% {
+    box-shadow: 0 0 60px var(--accent-glow), 0 0 100px var(--accent-glow);
+  }
+}
+
+/* Shake effect for anticipation */
+.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* Bounce effect */
+.bounce {
+  animation: bounce 0.6s ease;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-30px); }
+  60% { transform: translateY(-15px); }
+}
+
+/* Firework effect */
+.firework {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: firework 1s ease-out forwards;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+@keyframes firework {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.firework-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: firework-particle 1s ease-out forwards;
+}
+
+@keyframes firework-particle {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
