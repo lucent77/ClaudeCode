@@ -1,0 +1,70 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Vendor directory (can be included for deployment)
+# vendor/
+
+# Log files
+logs/*.log
+*.log
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+cache/
+
+# Credentials and keys
+*.pem
+*.key
+*.p12
+*.json
+!composer.json
+credentials/
+service-account*.json
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# PHP specific
+*.php.bak
+*.php~
+
+# Uploaded files (if any)
+uploads/*
+!uploads/.gitkeep
+
+# Session files
+sessions/
+
+# Debug files
+debug.log
+error.log
+
+# Test files
+tests/coverage/
+.phpunit.result.cache
+phpunit.xml
+
+# Node modules (if using any build tools)
+node_modules/
+
+# Build outputs
+dist/
+build/
