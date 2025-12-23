@@ -35,6 +35,7 @@ use SwissTurn\Controllers\GCodeController;
 use SwissTurn\Controllers\MCodeController;
 use SwissTurn\Controllers\ProgramController;
 use SwissTurn\Controllers\ParserController;
+use SwissTurn\Controllers\AIController;
 
 // Create router
 $router = new Router();
@@ -80,9 +81,18 @@ $router->get('/programs/{id}/annotated', [ProgramController::class, 'annotated']
 $router->post('/programs/{id}/delete', [ProgramController::class, 'destroy']);
 $router->post('/programs/{id}/reparse', [ProgramController::class, 'reparse']);
 
+// AI Analysis routes
+$router->get('/programs/{id}/ai', [AIController::class, 'analyze']);
+
 // API routes for AJAX
 $router->post('/api/parse', [ParserController::class, 'parse']);
 $router->get('/api/programs/{id}/lines', [ParserController::class, 'getLines']);
+
+// AI API routes
+$router->get('/api/ai/status', [AIController::class, 'apiStatus']);
+$router->post('/api/ai/analyze', [AIController::class, 'apiAnalyze']);
+$router->post('/api/ai/explain-line', [AIController::class, 'apiExplainLine']);
+$router->post('/api/ai/custom', [AIController::class, 'apiCustom']);
 
 // Dispatch request
 try {
