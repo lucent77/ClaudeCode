@@ -29,7 +29,8 @@
                 <option value="">Select Controller...</option>
                 <option value="FANUC 32i-B" <?= ($machine->controller_type ?? '') === 'FANUC 32i-B' ? 'selected' : '' ?>>FANUC 32i-B</option>
                 <option value="FANUC 31i" <?= ($machine->controller_type ?? '') === 'FANUC 31i' ? 'selected' : '' ?>>FANUC 31i</option>
-                <option value="MITSUBISHI" <?= ($machine->controller_type ?? '') === 'MITSUBISHI' ? 'selected' : '' ?>>MITSUBISHI</option>
+                <option value="MITSUBISHI M800" <?= ($machine->controller_type ?? '') === 'MITSUBISHI M800' ? 'selected' : '' ?>>MITSUBISHI M800</option>
+                <option value="MITSUBISHI M80" <?= ($machine->controller_type ?? '') === 'MITSUBISHI M80' ? 'selected' : '' ?>>MITSUBISHI M80</option>
             </select>
         </div>
 

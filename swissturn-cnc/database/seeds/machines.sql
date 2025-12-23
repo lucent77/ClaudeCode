@@ -2,7 +2,7 @@
 -- Supported SwissTurn machine configurations
 
 INSERT INTO machine (name, manufacturer, controller_type, description, is_active) VALUES
-('L20E-2M10', 'CINCOM', 'FANUC 32i-B', 'CINCOM L20E Type VIII 2M10 - 20mm bar capacity Swiss-type lathe with gang tooling and 8-station turret', 1),
+('L20E-2M10', 'CINCOM', 'MITSUBISHI M800', 'CINCOM L20E Type VIII 2M10 - 20mm bar capacity Swiss-type lathe with gang tooling and 8-station turret', 1),
 ('XD20', 'HANWHA', 'FANUC 32i-B', 'HANWHA XD20 - 20mm bar capacity Swiss-type lathe with 12-station turret', 1),
 ('XD26II-V', 'HANWHA', 'FANUC 32i-B', 'HANWHA XD26II-V - 26mm bar capacity Swiss-type lathe with Y-axis and sub-spindle', 1),
 ('XM20', 'HANWHA', 'FANUC 31i', 'HANWHA XM20 - Entry-level 20mm Swiss-type lathe with 8-station turret', 1);

@@ -54,7 +54,7 @@ swissturn-cnc/
 
 | Machine | Manufacturer | Controller |
 |---------|-------------|------------|
-| L20E-2M10 | CINCOM | FANUC 32i-B |
+| L20E-2M10 | CINCOM | MITSUBISHI M800 |
 | XD20 | HANWHA | FANUC 32i-B |
 | XD26II-V | HANWHA | FANUC 32i-B |
 | XM20 | HANWHA | FANUC 31i |
