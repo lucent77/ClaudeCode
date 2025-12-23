@@ -13,8 +13,8 @@ return [
     'upload' => [
         'max_file_size' => 10 * 1024 * 1024, // 10MB
         'allowed_extensions' => ['nc', 'cnc', 'txt', 'prg', 'mpf'],
-        'programs_path' => __DIR__ . '/../public/uploads/programs/',
-        'dwg_path' => __DIR__ . '/../public/uploads/dwg/',
+        'programs_path' => __DIR__ . '/../uploads/programs/',
+        'dwg_path' => __DIR__ . '/../uploads/dwg/',
     ],
 
     // Parser settings

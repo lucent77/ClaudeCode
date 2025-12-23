@@ -30,15 +30,19 @@ A web-based SwissTurn CNC programming platform that parses, analyzes, and visual
    mysql -u root -p your_database < database/seeds/mcodes_universal.sql
    ```
 4. Configure database connection in `config/database.php`
-5. Point web server to `public/` directory
+5. Upload all files to your Hostinger public_html directory
 
 ## Project Structure
 
 ```
 swissturn-cnc/
+├── index.php        # Application entry point
+├── .htaccess        # URL rewriting
 ├── config/          # Configuration files
 ├── database/        # Schema and seed data
-├── public/          # Web root (entry point)
+├── js/              # JavaScript files
+├── css/             # CSS files
+├── uploads/         # File uploads
 ├── src/
 │   ├── core/        # Core classes (Database, Router, Response)
 │   ├── controllers/ # HTTP controllers
@@ -49,6 +53,13 @@ swissturn-cnc/
 ├── views/           # PHP templates
 └── tests/           # Unit tests
 ```
+
+## Hostinger Deployment
+
+This project is structured for Hostinger shared hosting compatibility:
+- All files are at root level (no separate public directory)
+- index.php serves as the single entry point
+- .htaccess handles URL rewriting
 
 ## Supported Machines
 

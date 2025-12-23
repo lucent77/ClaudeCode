@@ -74,7 +74,7 @@ class Response
     public static function view(string $template, array $data = []): void
     {
         extract($data);
-        $viewPath = __DIR__ . '/../../views/' . $template . '.php';
+        $viewPath = BASE_PATH . '/views/' . $template . '.php';
 
         if (!file_exists($viewPath)) {
             self::serverError('View not found: ' . $template);
@@ -96,7 +96,7 @@ class Response
         extract($data);
 
         // Render content
-        $viewPath = __DIR__ . '/../../views/' . $template . '.php';
+        $viewPath = BASE_PATH . '/views/' . $template . '.php';
         if (!file_exists($viewPath)) {
             self::serverError('View not found: ' . $template);
             return;
@@ -107,7 +107,7 @@ class Response
         $content = ob_get_clean();
 
         // Render layout with content
-        $layoutPath = __DIR__ . '/../../views/' . $layout . '.php';
+        $layoutPath = BASE_PATH . '/views/' . $layout . '.php';
         if (!file_exists($layoutPath)) {
             echo $content;
             return;

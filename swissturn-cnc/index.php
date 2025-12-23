@@ -7,8 +7,8 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Define base path
-define('BASE_PATH', dirname(__DIR__));
+// Define base path (root directory for Hostinger compatibility)
+define('BASE_PATH', __DIR__);
 
 // Simple autoloader
 spl_autoload_register(function ($class) {
